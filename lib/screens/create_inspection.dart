@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:syta_admin/screens/login_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class CreateInspection extends StatefulWidget {
   const CreateInspection({super.key});
@@ -12,6 +13,9 @@ class CreateInspection extends StatefulWidget {
 
 class _CreateInspectionState extends State<CreateInspection> {
   final formKey = GlobalKey<FormState>();
+  TextEditingController _date = TextEditingController();
+  List<String> items = ['Versa 2021', 'Vento 2020'];
+  String? selectedItem = 'Versa 2021';
 
   @override
   Widget build(BuildContext context) {
@@ -43,59 +47,114 @@ class _CreateInspectionState extends State<CreateInspection> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: const Text(
+                  'Nueva Inspección',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 20),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: 300.0,
                     child: TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: "Nombre del cliente",
-                        
+                      decoration: InputDecoration(
+                        labelText: "Ingrese el problema",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
                       validator: (value) {
                         if (value!.isEmpty || !RegExp(r'^[a-z A-z]+$').hasMatch(value!)) {
-                          return "Registre un nombre correcto";
+                          return "Registre un titulo correcto";
                         }
                         return null;
                       },
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   SizedBox(
                     width: 300.0,
                     child: TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: "Número de teléfono",
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty || !RegExp(r'^[+]*[(]{0,1}[0-9]{1-4}[){0,1}[-\s\./0-9]+$').hasMatch(value!)) {
-                          return "Registre un número correcto";
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: 300.0,
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: "Modelo del vehículo",
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: 300.0,
-                    child: TextFormField(
-                      maxLines: 8,
-                      decoration: const InputDecoration(
+                      minLines: 1,
+                      maxLines: 20,
+                      decoration: InputDecoration(
                         labelText: "Detalles de la revisión",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
+                  SizedBox(
+                    width: 300.0,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Ingrese el nombre del cliente",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty || !RegExp(r'^[a-z A-z]+$').hasMatch(value!)) {
+                          return "Registre el nombre correcto";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 300.0,
+                    child: DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        labelText: "Vehículos del cliente",
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      value: selectedItem,
+                      items: items
+                          .map((item) => DropdownMenuItem<String>(
+                                value: item,
+                                child: Text(item, style: const TextStyle(fontSize: 18)),
+                              ))
+                          .toList(),
+                      onChanged: (item) => setState(() => selectedItem = item),
+                   ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 300.0,
+                    child: TextFormField(
+                      controller: _date,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        icon: Icon(Icons.calendar_today_rounded),
+                        labelText: "Selecciona una fecha límite"
+                      ),
+                      onTap: () async{
+                        DateTime? pickeddate = await showDatePicker(
+                          context: context, 
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000), 
+                          lastDate: DateTime(2201)
+                        );
+                        if(pickeddate != null){
+                          setState(() {
+                            _date.text = DateFormat('yyyy-MM-dd').format(pickeddate);
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () {},
                     child: const Text("Confirmar"),
