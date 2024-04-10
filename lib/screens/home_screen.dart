@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:syta_admin/screens/login_screen.dart';
+import 'package:syta_admin/screens/inspection_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -41,6 +42,22 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(ap.administratorModel.name),
+          ElevatedButton(
+            onPressed: ()
+            {
+              if (!context.mounted) return;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const InspectionScreen(
+                    inspectionId: 'FXfQn1uzcQFDa1DF7AD5'
+
+                  ),
+                ),
+              );
+            },
+            child: const Text('Inspeccion FXfQn1uzcQFDa1DF7AD5'),
+          ),
         ],
       )),
     );
