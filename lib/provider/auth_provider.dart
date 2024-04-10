@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:syta_admin/utils/show_snack_bar.dart'; 
 import 'package:syta_admin/model/administrator_model.dart';
 import 'package:syta_admin/model/location_model.dart';
-import 'package:syta_admin/screens/home_screen.dart';
+import 'package:syta_admin/screens/create_inspection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -53,7 +53,7 @@ class AuthProvider extends ChangeNotifier {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) => const CreateInspection(),
         ),
       );
     } on FirebaseAuthException catch (e) {
