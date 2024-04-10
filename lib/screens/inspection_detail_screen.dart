@@ -30,13 +30,15 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   bool _isChecked = false;
   TextEditingController _controller = TextEditingController();
   @override
-  void initState() {
+  void initState()
+  {
     super.initState();
 
     addTextToFields();
   }
 
-  void addTextToFields() {
+  void addTextToFields()
+  {
     setState(() {
       _controller.text = widget.description;
       if(widget.status=="FINALIZADO")
@@ -49,6 +51,14 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   void updateDetail(id,description,status,date)
   {
     _firebaseFirestore.collection("inspectionDetails").doc(id).update({"status": status, "description": description,"endDate": date});
+  }
+  void deleteDoc(id)
+  {
+    _firebaseFirestore.collection("inspectionDetails").doc(id).delete().then(
+          (doc) => Navigator.pop(context),
+      onError: (e) => print("Error updating document $e"),
+    );
+
   }
 
   @override
@@ -93,7 +103,38 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.delete),
+                      IconButton(onPressed: ()
+                      {
+                        // Muestra el mensaje modal cuando se presiona el botón
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context)
+                          {
+                            return AlertDialog(
+                              title: Text('Eliminando Registro'),
+                              content: Text('¿Está seguro que desea eliminar este registro?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: ()
+                                  {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Cancelar'),
+                                ),
+                                TextButton(
+                                  onPressed: ()
+                                  {
+                                    Navigator.of(context).pop();
+                                    deleteDoc(widget.inspectionDetailId);
+                                  },
+                                  child: Text('Aceptar'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                        icon: Icon(Icons.delete),
                         iconSize: 32,
                       ),
                     ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:syta_admin/screens/home_screen.dart';
 import 'package:syta_admin/screens/inspection_detail_screen.dart';
+import 'package:syta_admin/screens/inspection_Adddetail_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -17,9 +18,9 @@ class InspectionScreen extends StatefulWidget {
 class _InspectionScreenState extends State<InspectionScreen> {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   bool isChecked = false;
-  void actualizarEstatus( String id, String status)
+  void actualizarEstatus( String id, String status, String dateF)
   {
-    _firebaseFirestore.collection("inspectionDetails").doc(id).update({"status": status});
+    _firebaseFirestore.collection("inspectionDetails").doc(id).update({"status": status, "endDate": dateF});
   }
   @override
   Widget build(BuildContext context) {
@@ -123,13 +124,18 @@ class _InspectionScreenState extends State<InspectionScreen> {
                                 setState(() {
                                   isChecked = !isChecked;
                                 });
+                                String dateF = "";
+                                String status = "";
                                 if (userData['status']=="EN PROGRESO")
                                 {
-                                  actualizarEstatus(documentId,"FINALIZADO");
+                                  status = "FINALIZADO";
+                                  DateTime now = DateTime.now();
+                                  dateF = now.millisecondsSinceEpoch.toString();
                                 }else
                                 {
-                                  actualizarEstatus(documentId,"EN PROGRESO");
+                                  status = "EN PROGRESO";
                                 }
+                                actualizarEstatus(documentId,status, dateF);
 
                               },
                               icon: (userStatus=="FINALIZADO") ? Icon(Icons.check_circle) : Icon(Icons.check_circle_outline),
@@ -173,6 +179,16 @@ class _InspectionScreenState extends State<InspectionScreen> {
           ),
           ElevatedButton(
             onPressed: () {
+              if (!context.mounted) return;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>  InspectionAddDetailScreen(
+                      inspectionId: widget.inspectionId
+                  ),
+                ),
+              );
+
 
             },
             style: ElevatedButton.styleFrom(
