@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1015209164858",
+    "project_id": "syta-app",
+    "storage_bucket": "syta-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015209164858:android:51787b05d37fcf7b08b503",
+        "android_client_info": {
+          "package_name": "com.example.syta_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHdp6LXjh9xwba_qD6YnOkdb71m9M18p4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015209164858:android:272b1a950e866a3208b503",
+        "android_client_info": {
+          "package_name": "com.example.syta_client"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHdp6LXjh9xwba_qD6YnOkdb71m9M18p4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
