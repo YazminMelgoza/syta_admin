@@ -198,8 +198,8 @@ class _InspectionScreenState extends State<InspectionScreen> {
               "Agregar Actualización",
               style: TextStyle(color: Colors.white),
             ),
-          )
-
+          ),
+          SizedBox(height: 20),
         ],
       )),
     );
