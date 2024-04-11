@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
+import 'package:syta_admin/screens/check_inspections.dart';
 import 'package:syta_admin/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,12 @@ class _CreateInspectionState extends State<CreateInspection> {
   TextEditingController _date = TextEditingController();
   List<String> items = ['Versa 2021', 'Vento 2020'];
   String? selectedItem = 'Versa 2021';
+
+  @override
+  void initState() {
+    super.initState();
+    _date.text = DateFormat('dd/MM/yyyy').format(DateTime(2024, 3, 7));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +68,7 @@ class _CreateInspectionState extends State<CreateInspection> {
                   SizedBox(
                     width: 300.0,
                     child: TextFormField(
+                      controller: TextEditingController(text: "Falla neumatico"),
                       decoration: InputDecoration(
                         labelText: "Ingrese el problema",
                         border: OutlineInputBorder(
@@ -79,6 +87,7 @@ class _CreateInspectionState extends State<CreateInspection> {
                   SizedBox(
                     width: 300.0,
                     child: TextFormField(
+                    controller: TextEditingController(text: "Falla de neumatico en la parte trasera"),
                       minLines: 1,
                       maxLines: 20,
                       decoration: InputDecoration(
@@ -93,6 +102,7 @@ class _CreateInspectionState extends State<CreateInspection> {
                   SizedBox(
                     width: 300.0,
                     child: TextFormField(
+                      controller: TextEditingController(text: "Juancho"),
                       decoration: InputDecoration(
                         labelText: "Ingrese el nombre del cliente",
                         border: OutlineInputBorder(
@@ -142,7 +152,7 @@ class _CreateInspectionState extends State<CreateInspection> {
                       onTap: () async{
                         DateTime? pickeddate = await showDatePicker(
                           context: context, 
-                          initialDate: DateTime.now(),
+                          initialDate: DateTime(2024, 3, 7),
                           firstDate: DateTime(2000), 
                           lastDate: DateTime(2201)
                         );
@@ -156,7 +166,15 @@ class _CreateInspectionState extends State<CreateInspection> {
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (!context.mounted) return;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CheckInspections(),
+                        ),
+                      );
+                    },
                     child: const Text("Confirmar"),
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
