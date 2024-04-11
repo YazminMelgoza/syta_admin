@@ -42,22 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(ap.administratorModel.name),
-          ElevatedButton(
-            onPressed: ()
-            {
-              if (!context.mounted) return;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const InspectionScreen(
-                    inspectionId: 'FXfQn1uzcQFDa1DF7AD5'
 
-                  ),
-                ),
-              );
-            },
-            child: const Text('Inspeccion FXfQn1uzcQFDa1DF7AD5'),
-          ),
         ],
       )),
     );
