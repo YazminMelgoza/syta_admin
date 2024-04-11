@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    final screens = [const HomeScreen(), const CheckInspections(), const ClientList(),  const UpdateAvail()];
+    final screens = [const CheckInspections(), const ClientList(),  const UpdateAvail()];
 
     return Scaffold(
 
@@ -37,12 +37,6 @@ class _MainScreenState extends State<MainScreen> {
         },
         elevation: 0,
         items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            activeIcon: const Icon(Icons.home_filled),
-            label: 'Inicio',
-            backgroundColor: colors.primary,
-          ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.car_repair_outlined),
             activeIcon: const Icon(Icons.car_repair),

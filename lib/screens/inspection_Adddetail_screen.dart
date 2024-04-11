@@ -3,7 +3,7 @@ import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:syta_admin/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:syta_admin/screens/check_inspections.dart';
 class InspectionAddDetailScreen extends StatefulWidget {
   final String inspectionId;
 
@@ -51,7 +51,7 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
                     (value) => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
+                        builder: (context) => const CheckInspections(),
                       ),
                     ),
                   );
