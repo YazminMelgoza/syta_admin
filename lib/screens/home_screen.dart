@@ -14,22 +14,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  int selectedIndex = 0;
-
-  int _selectedIndex = 0;
-  List<Widget> _widgetOptions = <Widget>[
-    Placeholder(),
-    ClientList(),
-    Placeholder(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
@@ -62,45 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(ap.administratorModel.name),
         ],
       )),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.timelapse_outlined),
-              onPressed: () {
-                _onItemTapped(0);
-              },
-            ),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.person_3),
-              onPressed: () {
-                _onItemTapped(1);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ClientList()),
-                );
-              },
-            ),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: IconButton(
-              icon: Icon(Icons.search_rounded ),
-              onPressed: () {
-                _onItemTapped(2);
-              },
-            ),
-            label: 'Settings',
-          ),
-          
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
-      ),
     );
   }
 }
