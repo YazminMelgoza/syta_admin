@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
+import 'package:syta_admin/screens/client_list.dart';
 import 'package:syta_admin/screens/login_screen.dart';
 import 'package:syta_admin/screens/inspection_screen.dart';
 import 'package:provider/provider.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
@@ -25,12 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               ap.userSignOut().then(
                     (value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    ),
-                  );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                ),
+              );
             },
             icon: const Icon(Icons.exit_to_app, color: Colors.white),
           ),
@@ -38,26 +41,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Center(
           child: Column(
+
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(ap.administratorModel.name),
-          ElevatedButton(
-            onPressed: ()
-            {
-              if (!context.mounted) return;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const InspectionScreen(
-                    inspectionId: 'FXfQn1uzcQFDa1DF7AD5'
 
-                  ),
-                ),
-              );
-            },
-            child: const Text('Inspeccion FXfQn1uzcQFDa1DF7AD5'),
-          ),
         ],
       )),
     );
