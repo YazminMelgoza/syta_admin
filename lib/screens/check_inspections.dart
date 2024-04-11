@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:syta_admin/screens/create_inspection.dart';
 import 'package:syta_admin/screens/login_screen.dart';
+import 'package:syta_admin/screens/inspection_screen.dart';
 import 'package:provider/provider.dart';
 
 class CheckInspections extends StatefulWidget {
@@ -68,20 +69,42 @@ class _CheckInspectionsState extends State<CheckInspections> {
         ),
         Align(  
             alignment: Alignment.center,  // Center the container horizontally
-            child: Container(
-              width: 300,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.blue, // You can change the color as desired
-                borderRadius: BorderRadius.circular(10), // This makes the border circular
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Versa 2021 07/03/24'),
-                  const Icon(Icons.visibility, color: Colors.white), // You can change the icon as desired
-                ],
-              ),
+            child: Column(
+              children: [
+                Container(
+                  width: 300,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Versa 2021 07/03/24'),
+                      const Icon(Icons.visibility, color: Colors.white),
+
+
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10,),
+                ElevatedButton(
+                  onPressed: ()
+                  {
+                    if (!context.mounted) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const InspectionScreen(
+                            inspectionId: 'FXfQn1uzcQFDa1DF7AD5'
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('Versa 2021 07/03/24'),
+                ),
+              ],
             ),
           ),
         ],
