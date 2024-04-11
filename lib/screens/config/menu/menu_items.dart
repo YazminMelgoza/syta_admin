@@ -32,6 +32,20 @@ const appMenuItems = <MenuItem>[
     icon: Icons.person
   ),
 
+  MenuItem(
+    title: 'Jesus Garza Mora', 
+    subTitle: 'correo@correo.com', 
+    link: '/buttons', 
+    icon: Icons.person
+  ),
+
+  MenuItem(
+    title: 'Luis Mario ', 
+    subTitle: 'correo@correo.com', 
+    link: '/card', 
+    icon: Icons.person
+  ),
+
   
 
 ];

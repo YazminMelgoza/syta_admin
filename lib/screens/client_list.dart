@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:syta_admin/screens/client_info.dart';
 import 'package:syta_admin/screens/config/menu/menu_items.dart';
 
 class ClientList extends StatelessWidget {
@@ -8,7 +9,8 @@ class ClientList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Buttons Screen'),
+        title: const Text("Clientes", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: _ListView(),
     );
@@ -57,7 +59,10 @@ class _CustomListTile extends StatelessWidget {
         title: Text(menuItem.title),
         subtitle: Text( menuItem.subTitle ),
         onTap: () {
-          
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ClientInfor()),
+            );
         },
       ),
     );

@@ -16,6 +16,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int selectedIndex = 0;
 
+  int _selectedIndex = 0;
+  List<Widget> _widgetOptions = <Widget>[
+    Placeholder(),
+    ClientList(),
+    Placeholder(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
@@ -49,47 +63,43 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       )),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.shifting,
-        currentIndex: selectedIndex,
-        onTap: (value) {
-          setState(() {
-            selectedIndex = value;
-          });
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const ClientList()
-            )
-          );
-        },
-        items: const [
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon( Icons.timelapse_outlined ),
-            activeIcon: Icon( Icons.timelapse ),
-            label: 'Revisiones',
-            backgroundColor: Colors.blue, 
+            icon: IconButton(
+              icon: Icon(Icons.timelapse_outlined),
+              onPressed: () {
+                _onItemTapped(0);
+              },
+            ),
+            label: 'Home',
           ),
-
           BottomNavigationBarItem(
-            icon: Icon( Icons.person_3_outlined ),
-            activeIcon: Icon( Icons.person_3 ),
-            label: 'Clientes',
-            backgroundColor: Colors.red, 
+            icon: IconButton(
+              icon: Icon(Icons.person_3),
+              onPressed: () {
+                _onItemTapped(1);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ClientList()),
+                );
+              },
+            ),
+            label: 'Search',
           ),
-
           BottomNavigationBarItem(
-            icon: Icon( Icons.search_outlined ),
-            activeIcon: Icon( Icons.search_rounded ),
-            label: 'Detalles',
-            backgroundColor: Colors.purple, 
+            icon: IconButton(
+              icon: Icon(Icons.search_rounded ),
+              onPressed: () {
+                _onItemTapped(2);
+              },
+            ),
+            label: 'Settings',
           ),
-
-          BottomNavigationBarItem(
-            icon: Icon( Icons.blur_linear_outlined ),
-            activeIcon: Icon( Icons.blur_linear ),
-            label: 'Sucursal',
-            backgroundColor: Colors.green, 
-          ),
+          
         ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
   }
