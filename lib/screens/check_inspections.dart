@@ -61,6 +61,7 @@ class _CheckInspectionsState extends State<CheckInspections> {
 
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text("Lista de Revisiones", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
@@ -90,7 +91,7 @@ class _CheckInspectionsState extends State<CheckInspections> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: const Text(
                 'Revisiones en Progreso',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
             IconButton(  
@@ -112,13 +113,13 @@ class _CheckInspectionsState extends State<CheckInspections> {
             stream: _firebaseFirestore.collection('inspections').where("locationId", isEqualTo: ap.administratorModel.locationId).snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
                 return Text('Error al obtener los datos: ${snapshot.error}');
               }
               if (!snapshot.hasData) {
-                return Text('No hay documentos disponibles');
+                return const Text('No hay documentos disponibles');
               }
               List<QueryDocumentSnapshot> inspections = snapshot.data!.docs;
 
@@ -147,7 +148,7 @@ class _CheckInspectionsState extends State<CheckInspections> {
                       future: Future.wait([getCarName(carId), getUserName(userId)]),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator();
+                          return const CircularProgressIndicator();
                         }
                         if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
@@ -155,8 +156,8 @@ class _CheckInspectionsState extends State<CheckInspections> {
 
                         return Center(
                           child: Container(
-                            margin: EdgeInsets.all(10),
-                            padding: EdgeInsets.all(10),
+                            margin: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Colors.blue[50],
                               borderRadius: BorderRadius.circular(10),
@@ -165,10 +166,10 @@ class _CheckInspectionsState extends State<CheckInspections> {
                               children: [
                                 IconButton(
                                   onPressed: () {},
-                                  icon:  Icon(Icons.car_repair_rounded),
+                                  icon: const Icon(Icons.car_repair_rounded),
                                   iconSize: 32,
                                 ),
-                                SizedBox(width: 10),
+                                const SizedBox(width: 10),
                                 GestureDetector(
                                   onTap: () {
                                     if (!context.mounted) return;
@@ -204,10 +205,7 @@ class _CheckInspectionsState extends State<CheckInspections> {
               );
             },
           ),
-
-          SizedBox(height: 10,),
-
-
+          const SizedBox(height: 10,),
         ],
       ),
     );

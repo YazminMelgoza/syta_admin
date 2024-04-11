@@ -9,6 +9,7 @@ class ClientList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: const Text("Clientes", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),

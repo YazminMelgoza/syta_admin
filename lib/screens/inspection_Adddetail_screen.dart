@@ -8,8 +8,7 @@ class InspectionAddDetailScreen extends StatefulWidget {
   final String inspectionId;
 
 
-  InspectionAddDetailScreen(
-      {
+  InspectionAddDetailScreen({
         super.key,
         required this.inspectionId,
       });
@@ -21,7 +20,7 @@ class InspectionAddDetailScreen extends StatefulWidget {
 class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   bool _isChecked = false;
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
 
   void addDetail(id,description,status,dateF,dateI)
@@ -42,8 +41,9 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text("SYTA  ${ap.locationModel.name}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+        title: Text("SYTA  ${ap.locationModel.name}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
           IconButton(
             onPressed: () {
@@ -62,12 +62,12 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
       ),
       body: Center(
           child: Container(
-            margin:EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -84,15 +84,15 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
                   controller: _controller,
                   maxLines: null, // Esto permite que el campo de texto sea multilinea
                   keyboardType: TextInputType.multiline, // Esto también permite que el campo de texto sea multilinea
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Descripción', // Etiqueta del campo de texto
                     border: OutlineInputBorder(), // Bordes del campo de texto
                   ),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Row(
                   children: [
-                    Text("Finalizado: "),
+                    const Text("Finalizado: "),
                     Checkbox(
                       value: _isChecked,
                       onChanged: (bool? newValue) {
@@ -124,9 +124,9 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFC4C00),
+                    backgroundColor: const Color(0xFFFC4C00),
                   ),
-                    child: Text("Agregar Actualización",style: TextStyle(color: Colors.white), ),
+                    child: const Text("Agregar Actualización",style: TextStyle(color: Colors.white), ),
                 )
               ],
             ),

@@ -33,6 +33,7 @@ class _UpdateAvail extends State<UpdateAvail> {
     final docRef = FirebaseFirestore.instance.collection('locations').doc('7yGA1qlf3PoEYOzHQxUf');
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text("SYTA  ${ap.locationModel.name}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
@@ -56,7 +57,7 @@ class _UpdateAvail extends State<UpdateAvail> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              const Row(
                 children: [
                   Padding(padding: EdgeInsets.only(left: 15,top: 20),
                     child:
@@ -89,7 +90,10 @@ class _UpdateAvail extends State<UpdateAvail> {
                           ),
                         ),
                       ),
-                      Text("La sucursal puede aceptar inspecciones",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500
+                      const SizedBox(
+                        width: 200,
+                        child: Text("La sucursal puede aceptar inspecciones",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500
+                      )
                       ),)
                     ],
                   ),
@@ -107,7 +111,11 @@ class _UpdateAvail extends State<UpdateAvail> {
                         ),
                       ), // Add some space between the button
                       ),
+                      SizedBox(
+                        width: 200,
+                        child: 
                       Text("La sucursal ofrece pocas inspecciones",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500))
+)
 
                     ],
                   ),
@@ -125,7 +133,10 @@ class _UpdateAvail extends State<UpdateAvail> {
                       ),
                     ),
                     ),
-                    Text("La sucursal no acepto inspecciones",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500))
+                    SizedBox(
+                      width: 200,
+                      child: Text("La sucursal no acepto inspecciones",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500))
+                    )
 
                   ],)
                 ],

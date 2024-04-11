@@ -29,6 +29,7 @@ class _InspectionScreenState extends State<InspectionScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text("Revisión", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
