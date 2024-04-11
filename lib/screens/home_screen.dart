@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:syta_admin/screens/client_list.dart';
 import 'package:syta_admin/screens/login_screen.dart';
+import 'package:syta_admin/screens/inspection_screen.dart';
 import 'package:provider/provider.dart';
 
 
@@ -44,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(ap.administratorModel.name),
+
         ],
       )),
     );
