@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:syta_admin/screens/login_screen.dart';
+import 'package:syta_admin/screens/inspection_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,12 +25,12 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               ap.userSignOut().then(
                     (value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    ),
-                  );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                ),
+              );
             },
             icon: const Icon(Icons.exit_to_app, color: Colors.white),
           ),
@@ -37,12 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Center(
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(ap.administratorModel.name),
-        ],
-      )),
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(ap.administratorModel.name),
+
+            ],
+          )),
     );
   }
 }
