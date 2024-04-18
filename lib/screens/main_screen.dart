@@ -1,6 +1,7 @@
 import 'package:syta_admin/screens/home_screen.dart';
 import 'package:syta_admin/screens/check_inspections.dart';
 import 'package:flutter/material.dart';
+import 'package:syta_admin/screens/update_availability.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,7 +17,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    final screens = [const HomeScreen(), const CheckInspections()];
+    final screens = [const HomeScreen(), const CheckInspections(), const UpdateAvail()];
 
     return Scaffold(
 
@@ -47,6 +48,12 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Revisiones',
             backgroundColor: colors.primary,
           ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.access_time),
+            activeIcon: const Icon(Icons.access_time_filled),
+            label: 'Clientes',
+            backgroundColor: colors.primary,
+          )
         ],
       ),
     );
