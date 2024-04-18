@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:syta_admin/screens/create_inspection.dart';
+import 'package:syta_admin/screens/add_inspection.dart';
 import 'package:syta_admin/screens/login_screen.dart';
 import 'package:syta_admin/screens/inspection_screen.dart';
 import 'package:provider/provider.dart';
@@ -64,19 +65,7 @@ class _CheckInspectionsState extends State<CheckInspections> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text("Lista de Revisiones", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
-          IconButton(
-            onPressed: () {
-              ap.userSignOut().then(
-                    (value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    ),
-                  );
-            },
-            icon: const Icon(Icons.exit_to_app, color: Colors.white),
-          ),
+
         ],
       ),
       body: Column(
@@ -99,13 +88,14 @@ class _CheckInspectionsState extends State<CheckInspections> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CreateInspection(),
+                    builder: (context) => const AddInspection(),
                   ),
                 );
               },
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add_circle),
               color: Colors.blue, 
             ),
+            SizedBox(height: 10,),
           ],
         ),
           StreamBuilder<QuerySnapshot>(
