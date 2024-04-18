@@ -1,16 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:syta_admin/screens/client_info.dart';
 import 'package:syta_admin/screens/config/menu/menu_items.dart';
+import 'package:syta_admin/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:syta_admin/screens/login_screen.dart';
 
 class ClientList extends StatelessWidget {
   const ClientList({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: const Text("Clientes", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         backgroundColor: Theme.of(context).colorScheme.primary,
+
+        actions: [
+          IconButton(
+            onPressed: () {
+              ap.userSignOut().then(
+                    (value) => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    ),
+                  );
+            },
+            icon: const Icon(Icons.exit_to_app, color: Colors.white),
+          ),
+        ],
       ),
       body: _ListView(),
     );

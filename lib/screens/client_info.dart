@@ -7,6 +7,7 @@ class ClientInfor extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: const Text("Usuario", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
