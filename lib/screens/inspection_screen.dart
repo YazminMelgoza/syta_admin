@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
+import 'package:syta_admin/screens/check_inspections.dart';
 import 'package:syta_admin/screens/home_screen.dart';
 import 'package:syta_admin/screens/inspection_detail_screen.dart';
 import 'package:syta_admin/screens/inspection_Adddetail_screen.dart';
@@ -29,6 +30,7 @@ class _InspectionScreenState extends State<InspectionScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text("Revisión", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
@@ -38,7 +40,7 @@ class _InspectionScreenState extends State<InspectionScreen> {
                     (value) => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
+                        builder: (context) => const CheckInspections(),
                       ),
                     ),
                   );
