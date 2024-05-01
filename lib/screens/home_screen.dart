@@ -21,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text("SYTA  ${ap.locationModel.name}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
@@ -28,12 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               ap.userSignOut().then(
                     (value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    ),
-                  );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                ),
+              );
             },
             icon: const Icon(Icons.exit_to_app, color: Colors.white),
           ),
@@ -41,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Center(
           child: Column(
+
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

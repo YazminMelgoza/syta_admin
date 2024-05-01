@@ -54,10 +54,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
 
                 const SizedBox(height: 20.0),
-                textField(controller: emailController, hintText: 'Correo', icon: Icons.email, isObscure: false),
+                textField(controller: emailController, keyboardType: TextInputType.emailAddress, hintText: 'Correo', icon: Icons.email, isObscure: false),
                 const SizedBox(height: 20.0),
                 // custom button
-                textField(controller: passwordController, hintText: 'Contraseña', icon: Icons.lock, isObscure: true),
+                textField(controller: passwordController, keyboardType: TextInputType.text, hintText: 'Contraseña', icon: Icons.lock, isObscure: true),
                 const SizedBox(height: 20.0),
                 SizedBox(
                   width: 500,
@@ -86,14 +86,16 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget textField({
     required TextEditingController controller,
     required String hintText,
+    required TextInputType keyboardType,
     required IconData icon,
     required bool isObscure,
   }) => 
   
   SizedBox(
     width: 500,
-  child: TextFormField(
+    child: TextFormField(
     controller: controller,
+    keyboardType: keyboardType,
     onChanged: (value) => setState(() {controller.text = value;}),
     obscureText: isObscure,
     cursorColor: Theme.of(context).primaryColor,
