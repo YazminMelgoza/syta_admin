@@ -1,83 +1,124 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:syta_admin/screens/add_car_form.dart';
+class ClientInfo extends StatelessWidget {
+  final String clientId;
+  final String name;
+  final String email;
+  final String phone;
 
-class ClientInfor extends StatelessWidget {
-  const ClientInfor({super.key});
+  const ClientInfo({
+    required this.clientId,
+    required this.name,
+    required this.email,
+    required this.phone,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: const Text(
-          "Usuario",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Center(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 20.0),
-                  width: double.infinity,
-                  color: Colors.white,
-                  child: const SingleChildScrollView(
-                    padding: EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Nombre:',
-                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                        ),
-                        Text('Luis Mario', style: TextStyle(fontSize: 18.0),),
-                        SizedBox(height: 20.0),
-                        Text('Correo:', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
-                        Text('correo@correo.com', style: TextStyle(fontSize: 18.0),),
-                        SizedBox(height: 20.0),
-                        Text('Teléfono:', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
-                        Text('1234567890', style: TextStyle(fontSize: 18.0),),
-                        SizedBox(height: 40.0),
-                        Text('Vehículos Personales:', style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),),
-                        SizedBox(height: 20.0),
-                        Text('Auto:', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
-                        Text('Toyota', style: TextStyle(fontSize: 18.0),),
-                        SizedBox(height: 20.0),
-                        Text('Modelo:', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
-                        Text('Camry', style: TextStyle(fontSize: 18.0), ),
-                        SizedBox(height: 20.0),
-                        Text('Año:', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold), ),
-                        Text( '2023', style: TextStyle(fontSize: 18.0),),
-                      ],
-                    ),
-                  ),
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance.collection('users').doc(clientId).get(),
+      builder: (context, userSnapshot) {
+        if (userSnapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+        if (userSnapshot.hasError) {
+          return Scaffold(body: Center(child: Text('Error: ${userSnapshot.error}')));
+        }
+        if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+          return Scaffold(body: Center(child: Text('No user data found')));
+        }
+
+        final userData = userSnapshot.data!.data() as Map<String, dynamic>;
+
+        return FutureBuilder<QuerySnapshot>(
+          future: FirebaseFirestore.instance.collection('cars').where('actualUserId', isEqualTo: clientId).get(),
+          builder: (context, carSnapshot) {
+            if (carSnapshot.connectionState == ConnectionState.waiting) {
+              return Scaffold(body: Center(child: CircularProgressIndicator()));
+            }
+            if (carSnapshot.hasError) {
+              return Scaffold(body: Center(child: Text('Error: ${carSnapshot.error}')));
+            }
+
+            final List<Map<String, dynamic>> carsData = carSnapshot.data!.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+            return Scaffold(
+              appBar: AppBar(
+                foregroundColor: Colors.white,
+                title: const Text(
+                  "Usuario",
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                 ),
+                backgroundColor: Theme.of(context).colorScheme.primary,
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 140.0),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
+              body: SingleChildScrollView(
                 padding: const EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CarForm()),
-                    );
-                  },
-                  child: Text('Agregar Auto'),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Nombre:',
+                      style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                    Text(name, style: const TextStyle(fontSize: 18.0)),
+                    const SizedBox(height: 20.0),
+                    Text(
+                      'Correo:',
+                      style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                    Text(email, style: const TextStyle(fontSize: 18.0)),
+                    const SizedBox(height: 20.0),
+                    Text(
+                      'Teléfono:',
+                      style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                    Text(userData['phoneNumber'], style: const TextStyle(fontSize: 18.0)),
+                    const SizedBox(height: 40.0),
+                    const Text(
+                      'Vehículos Personales:',
+                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10.0),
+                    for (var carData in carsData) ...[
+                      Text(
+                        'Auto:',
+                        style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                      ),
+                      Text(carData['name'], style: const TextStyle(fontSize: 18.0)),
+                      const SizedBox(height: 10.0),
+                      Text(
+                        'Placas:',
+                        style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                      ),
+                      Text(carData['plates'], style: const TextStyle(fontSize: 18.0)),
+                      const SizedBox(height: 10.0),
+                      Text(
+                        'Año:',
+                        style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                      ),
+                      Text(carData['model'], style: const TextStyle(fontSize: 18.0)),
+                      const SizedBox(height: 20.0),
+                    ],
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const CarForm()),
+                          );
+                        },
+                        child: const Text('Agregar Auto'),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
+            );
+          },
+        );
+      },
     );
   }
 }
