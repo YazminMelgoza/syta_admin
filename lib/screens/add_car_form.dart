@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ClientForm extends StatefulWidget {
-  const ClientForm({Key? key}) : super(key: key);
+class CarForm extends StatefulWidget {
+  const CarForm({Key? key}) : super(key: key);
 
   @override
-  State<ClientForm> createState() => _ClientFormState();
+  State<CarForm> createState() => _CarFormState();
 }
 final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 Future<void> addNewClientAndCar(String name, String email, String phone, String carMake, String model, String year) async {
@@ -33,7 +33,7 @@ Future<void> addNewClientAndCar(String name, String email, String phone, String 
   }
 
 }
-class _ClientFormState extends State<ClientForm> {
+class _CarFormState extends State<CarForm> {
   final _formKey = GlobalKey<FormState>(); // Key for form validation
   String _name = ""; // Stores client name
   String _email = ""; // Stores client email
@@ -48,7 +48,7 @@ class _ClientFormState extends State<ClientForm> {
       appBar: AppBar(
         foregroundColor: Colors.white,
         title: const Text(
-          "Agregar Cliente",
+          "Agregar Auto",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -66,54 +66,8 @@ class _ClientFormState extends State<ClientForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 20.0),
                     Text(
-                      'Informacion del cliente',
-                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                    ),
-                    TextFormField(
-                      initialValue: _name, // Set initial value
-                      decoration: const InputDecoration(
-                        labelText: "Nombre:",
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Por favor ingrese un nombre.";
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) => _name = newValue ?? "", // Save new value
-                    ),
-                    SizedBox(height: 20.0),
-                    TextFormField(
-                      initialValue: _email,
-                      decoration: const InputDecoration(
-                        labelText: "Correo:",
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Por favor ingrese un correo electrónico.";
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) => _email = newValue ?? "",
-                    ),
-                    SizedBox(height: 20.0),
-                    TextFormField(
-                      initialValue: _phone,
-                      decoration: const InputDecoration(
-                        labelText: "Teléfono:",
-                      ),
-                      keyboardType: TextInputType.phone, // Set keyboard type
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Por favor ingrese un número de teléfono.";
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) => _phone = newValue ?? "",
-                    ),
-                    SizedBox(height: 40.0),
-                    /*Text(
                       'Vehículos Personales:',
                       style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                     ),
@@ -141,7 +95,7 @@ class _ClientFormState extends State<ClientForm> {
                       ),
                       keyboardType: TextInputType.number, // Set keyboard type
                       onSaved: (newValue) => _carYear = newValue ?? "",
-                    ),*/
+                    ),
                     SizedBox(height: 20.0),
                     Padding(padding: EdgeInsets.only(left:180),child: ElevatedButton(
                       onPressed: () {
