@@ -67,6 +67,7 @@ class ClientList extends StatelessWidget {
     return MenuItem(
       title: data['name'] ?? 'No Name', // Handle missing data gracefully
       subTitle: data['email'] ?? 'No Email',
+      clientId: data['uid'] ?? '616kTidVW5dfOE1CTBAV0c18V5l1',
       link: '/buttons', // Assuming you have a ClientInfo screen
       icon: Icons.person,
     );
@@ -96,30 +97,37 @@ class _ListView extends StatelessWidget {
 }
 
 class _CustomListTile extends StatelessWidget {
+  final MenuItem menuItem;
+
   const _CustomListTile({
     required this.menuItem,
   });
 
-  final MenuItem menuItem;
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0), // bordes redondeados
-        color: Colors.white, // color de fondo
-        border: Border.all(color: Colors.black), // borde negro
+        borderRadius: BorderRadius.circular(10.0),
+        color: Colors.white,
+        border: Border.all(color: Colors.black),
       ),
       child: ListTile(
         leading: Icon(menuItem.icon),
-        trailing: Icon( Icons.arrow_forward_ios_rounded ),
+        trailing: Icon(Icons.arrow_forward_ios_rounded),
         title: Text(menuItem.title),
-        subtitle: Text( menuItem.subTitle ),
+        subtitle: Text(menuItem.subTitle),
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ClientInfor()),
+            MaterialPageRoute(
+              builder: (context) => ClientInfo(
+                clientId: menuItem.clientId, // Pass client ID
+                name: menuItem.title,
+                email: menuItem.subTitle,
+                phone: '', // Add phone number here if available
+              ),
+            ),
           );
         },
       ),

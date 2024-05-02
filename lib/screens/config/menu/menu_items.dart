@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class MenuItem {
+  final String clientId;
   final String title;
   final String subTitle; 
   final String link;
   final IconData icon;
 
   const MenuItem ({
+    required this.clientId,
     required this.title,
     required this.subTitle,
     required this.link,
@@ -16,7 +18,7 @@ class MenuItem {
 }
 
 
-const appMenuItems = <MenuItem>[
+/* const appMenuItems = <MenuItem>[
 
   MenuItem(
     title: 'Jesus Garza Mora', 
@@ -46,6 +48,8 @@ const appMenuItems = <MenuItem>[
     icon: Icons.person
   ),
 
-  
+
 
 ];
+
+*/
