@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:syta_admin/screens/client_form.dart';
 import 'package:syta_admin/screens/client_info.dart';
@@ -7,17 +8,18 @@ import 'package:provider/provider.dart';
 import 'package:syta_admin/screens/login_screen.dart';
 
 class ClientList extends StatelessWidget {
-  const ClientList({super.key});
-
+  const ClientList({Key? key}); // Fix the key parameter
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
-        title: const Text("Clientes", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+        title: const Text(
+          "Clientes",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
-
         actions: [
           IconButton(
             onPressed: () {
@@ -34,27 +36,58 @@ class ClientList extends StatelessWidget {
           ),
         ],
       ),
-      body: _ListView(),
+      body: FutureBuilder<List<MenuItem>>(
+        future: _fetchClientData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final List<MenuItem> clientList = snapshot.data!;
+
+          return _ListView(clientList: clientList); // Pass clientList to _ListView
+        },
+      ),
+    );
+  }
+
+  Future<List<MenuItem>> _fetchClientData() async {
+    final snapshot =
+    await FirebaseFirestore.instance.collection('users').get();
+    return snapshot.docs.map((doc) => _menuItemFromDoc(doc)).toList();
+  }
+
+  // Function to create a MenuItem from a DocumentSnapshot
+  MenuItem _menuItemFromDoc(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return MenuItem(
+      title: data['name'] ?? 'No Name', // Handle missing data gracefully
+      subTitle: data['email'] ?? 'No Email',
+      link: '/buttons', // Assuming you have a ClientInfo screen
+      icon: Icons.person,
     );
   }
 }
 
 class _ListView extends StatelessWidget {
-  const _ListView();
+  final List<MenuItem> clientList;
+
+  const _ListView({required this.clientList}); // Add clientList parameter
 
   @override
   Widget build(BuildContext context) {
-
-    appMenuItems; // Assuming this holds your list of menu items
-
     return ListView.builder(
-      itemCount: appMenuItems.length + 1, // Add 1 for the "Add Client" container
+      itemCount: clientList.length + 1, // Add 1 for "Add Client" container
       itemBuilder: (context, index) {
-        if (index == appMenuItems.length) {
-          // This is the last item, for adding client
+        if (index == clientList.length) {
+          // This is the last item, for adding client (unchanged)
           return _AddClientContainer();
         } else {
-          final menuItem = appMenuItems[index];
+          final menuItem = clientList[index];
           return _CustomListTile(menuItem: menuItem);
         }
       },
