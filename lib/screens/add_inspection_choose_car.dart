@@ -22,7 +22,7 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
   Future<void> getUserId(userPhone) async
   {
     try {
-      await _firebaseFirestore.collection("users").where("phoneNumber", isEqualTo: userPhone).get().then(
+      await _firebaseFirestore.collection("userInfo").where("phoneNumber", isEqualTo: userPhone).get().then(
             (querySnapshot) {
           print("Successfully completed");
           for (var docSnapshot in querySnapshot.docs) {
