@@ -24,6 +24,10 @@ class _InspectionScreenState extends State<InspectionScreen> {
   {
     _firebaseFirestore.collection("inspectionDetails").doc(id).update({"status": status, "endDate": dateF});
   }
+  void finalizarInspeccion( String id, String statusIns)
+  {
+    _firebaseFirestore.collection("inspections").doc(id).update({"status": statusIns});
+  }
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
@@ -199,6 +203,25 @@ class _InspectionScreenState extends State<InspectionScreen> {
         ),
       ),
       SizedBox(height: 20),
+      ElevatedButton(
+        onPressed: () {
+          if (!context.mounted) return;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>  CheckInspections(),
+            ),
+          );
+          finalizarInspeccion(widget.inspectionId, "FINALIZADO");
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color.fromARGB(255, 9, 8, 99),
+        ),
+        child: Text(
+          "Finalizar Revisión",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
               ],
             ),
     );
