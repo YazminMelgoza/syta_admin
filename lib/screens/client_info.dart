@@ -9,15 +9,26 @@ class ClientInfo extends StatelessWidget {
   final String email;
   final String phone;
 
+  final String carMake;
+  final String carModel;
+  final String year;
+  final String userId;
+
   const ClientInfo({
     required this.clientId,
     required this.name,
     required this.email,
     required this.phone,
+
+    required this.carMake,
+    required this.carModel,
+    required this.year,
+    required this.userId,
   });
 
   @override
   Widget build(BuildContext context) {
+
     return FutureBuilder<DocumentSnapshot>(
       future: FirebaseFirestore.instance.collection('users').doc(clientId).get(),
       builder: (context, userSnapshot) {
@@ -34,7 +45,7 @@ class ClientInfo extends StatelessWidget {
         final userData = userSnapshot.data!.data() as Map<String, dynamic>;
 
         return FutureBuilder<QuerySnapshot>(
-          future: FirebaseFirestore.instance.collection('cars').where('actualUserId', isEqualTo: clientId).get(),
+          future: FirebaseFirestore.instance.collection('cars').where('actualUserId', isEqualTo: userId).get(),
           builder: (context, carSnapshot) {
             if (carSnapshot.connectionState == ConnectionState.waiting) {
               return Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -59,6 +70,7 @@ class ClientInfo extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    
                     Text(
                       'Nombre:',
                       style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
@@ -77,6 +89,7 @@ class ClientInfo extends StatelessWidget {
                     ),
                     Text(userData['phoneNumber'], style: const TextStyle(fontSize: 18.0)),
                     const SizedBox(height: 40.0),
+                    
                     const Text(
                       'Vehículos Personales:',
                       style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
@@ -85,6 +98,7 @@ class ClientInfo extends StatelessWidget {
                     for (var carData in carsData) ...[
                       Row(
                         children: [
+                          
                           Text(
                             'Auto:',
                             style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
@@ -122,6 +136,7 @@ class ClientInfo extends StatelessWidget {
                       Text(carData['model'], style: const TextStyle(fontSize: 18.0)),
                       const SizedBox(height: 20.0),
                     ],
+
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: ElevatedButton(

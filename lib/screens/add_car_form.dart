@@ -9,12 +9,11 @@ class CarForm extends StatefulWidget {
   State<CarForm> createState() => _CarFormState();
 }
 final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-Future<void> addNewClientAndCar(String name, String email, String phone, String carMake, String model, String year) async {
+
+Future<void> addNewCar(String carMake, String year, String carModel) async {
   try{
     DocumentReference userDocRef = await _firebaseFirestore.collection("users").add({
-      "name": name,
-      "email": email,
-      "phoneNumber": phone,
+      
     });
 
     // Capture the user ID (document ID)
@@ -23,7 +22,7 @@ Future<void> addNewClientAndCar(String name, String email, String phone, String 
     // Add car data to 'cars' collection with the captured user ID
     await _firebaseFirestore.collection("cars").add({
       "plates": carMake,
-      "name": carMake,
+      "name": carModel,
       "model": year,
       "actualUserId": userId, // Include the user ID here
     });
@@ -34,10 +33,7 @@ Future<void> addNewClientAndCar(String name, String email, String phone, String 
 
 }
 class _CarFormState extends State<CarForm> {
-  final _formKey = GlobalKey<FormState>(); // Key for form validation
-  String _name = ""; // Stores client name
-  String _email = ""; // Stores client email
-  String _phone = ""; // Stores client phone number
+  final _formKey = GlobalKey<FormState>(); 
   String _carMake = ""; // Stores car make
   String _carModel = ""; // Stores car model
   String _carYear = ""; // Stores car year
@@ -81,20 +77,20 @@ class _CarFormState extends State<CarForm> {
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
-                      initialValue: _carModel,
+                      initialValue: _carYear,
                       decoration: const InputDecoration(
                         labelText: "Modelo:",
                       ),
-                      onSaved: (newValue) => _carModel = newValue ?? "",
+                      onSaved: (newValue) => _carYear = newValue ?? "",
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
-                      initialValue: _carYear,
+                      initialValue: _carModel,
                       decoration: const InputDecoration(
                         labelText: "Año:",
                       ),
                       keyboardType: TextInputType.number, // Set keyboard type
-                      onSaved: (newValue) => _carYear = newValue ?? "",
+                      onSaved: (newValue) => _carModel = newValue ?? "",
                     ),
                     SizedBox(height: 20.0),
                     Padding(padding: EdgeInsets.only(left:180),child: ElevatedButton(
@@ -102,14 +98,14 @@ class _CarFormState extends State<CarForm> {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save(); // Save form data
                           // Handle form submission logic here
-                          addNewClientAndCar(_name, _email, _phone, _carMake, _carModel, _carYear);
+                          addNewCar(_carMake, _carModel, _carYear);
                           // You can update the database or perform other actions
-                          print("Cliente actualizado: $_name, $_email, $_phone");
+                          print("Cliente actualizado: $_carMake, $_carModel, $_carYear");
                           // You can show a success message or navigate elsewhere
                         }
                         Navigator.pop(context);
                       },
-                      child: const Text("Guardar Cliente"),
+                      child: const Text("Guardar Auto"),
                     )),
                   ],
                 ),

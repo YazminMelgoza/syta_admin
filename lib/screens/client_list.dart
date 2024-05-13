@@ -126,6 +126,10 @@ class _CustomListTile extends StatelessWidget {
                 name: menuItem.title,
                 email: menuItem.subTitle,
                 phone: '', // Add phone number here if available
+                carMake: '',
+                carModel: '',
+                year: '',
+                userId: '',
               ),
             ),
           );

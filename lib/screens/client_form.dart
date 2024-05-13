@@ -11,7 +11,7 @@ class ClientForm extends StatefulWidget {
   State<ClientForm> createState() => _ClientFormState();
 }
 final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-Future<void> addNewClientAndCar(String name, String email, String phone, String carMake, String model, String year) async {
+Future<void> addNewClient(String name, String email, String phone) async {
   try{
     DocumentReference userDocRef = await _firebaseFirestore.collection("users").add({
       "name": name,
@@ -24,10 +24,6 @@ Future<void> addNewClientAndCar(String name, String email, String phone, String 
 
     // Add car data to 'cars' collection with the captured user ID
     await _firebaseFirestore.collection("cars").add({
-      "plates": carMake,
-      "name": carMake,
-      "model": year,
-      "actualUserId": userId, // Include the user ID here
     });
   } catch (error) {
     // Handle errors
@@ -115,42 +111,13 @@ class _ClientFormState extends State<ClientForm> {
                       onSaved: (newValue) => _phone = newValue ?? "",
                     ),
                     SizedBox(height: 40.0),
-                    /*Text(
-                      'Vehículos Personales:',
-                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 20.0),
-                    TextFormField(
-                      initialValue: _carMake,
-                      decoration: const InputDecoration(
-                        labelText: "Placas:",
-                      ),
-                      onSaved: (newValue) => _carMake = newValue ?? "",
-                    ),
-                    SizedBox(height: 20.0),
-                    TextFormField(
-                      initialValue: _carModel,
-                      decoration: const InputDecoration(
-                        labelText: "Modelo:",
-                      ),
-                      onSaved: (newValue) => _carModel = newValue ?? "",
-                    ),
-                    SizedBox(height: 20.0),
-                    TextFormField(
-                      initialValue: _carYear,
-                      decoration: const InputDecoration(
-                        labelText: "Año:",
-                      ),
-                      keyboardType: TextInputType.number, // Set keyboard type
-                      onSaved: (newValue) => _carYear = newValue ?? "",
-                    ),*/
                     SizedBox(height: 20.0),
                     Padding(padding: EdgeInsets.only(left:180),child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save(); // Save form data
                           // Handle form submission logic here
-                          addNewClientAndCar(_name, _email, _phone, _carMake, _carModel, _carYear);
+                          addNewClient(_name, _email, _phone);
                           // You can update the database or perform other actions
                           print("Cliente actualizado: $_name, $_email, $_phone");
                           // You can show a success message or navigate elsewhere
