@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:syta_admin/screens/check_inspections.dart';
 
 class ClientForm extends StatefulWidget {
-  const ClientForm({Key? key}) : super(key: key);
+  final bool fromAddInspectionCar;
+  const ClientForm({Key? key, this.fromAddInspectionCar = false}) : super(key: key);
 
   @override
   State<ClientForm> createState() => _ClientFormState();
@@ -153,7 +155,16 @@ class _ClientFormState extends State<ClientForm> {
                           print("Cliente actualizado: $_name, $_email, $_phone");
                           // You can show a success message or navigate elsewhere
                         }
-                        Navigator.pop(context);
+                        if (widget.fromAddInspectionCar) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CheckInspections(),
+                            ),
+                          );
+                        } else {
+                          Navigator.pop(context);
+                        }
                       },
                       child: const Text("Guardar Cliente"),
                     )),
