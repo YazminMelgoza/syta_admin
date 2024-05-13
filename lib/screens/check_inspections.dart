@@ -62,11 +62,24 @@ class _CheckInspectionsState extends State<CheckInspections> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text("Lista de Revisiones", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
-
+          IconButton(
+            onPressed: () {
+              ap.userSignOut().then(
+                    (value) => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.exit_to_app, color: Colors.white),
+          ),
         ],
       ),
       body: Column(
@@ -100,7 +113,10 @@ class _CheckInspectionsState extends State<CheckInspections> {
           ],
         ),
           StreamBuilder<QuerySnapshot>(
-            stream: _firebaseFirestore.collection('inspections').where("locationId", isEqualTo: ap.administratorModel.locationId).snapshots(),
+            stream: _firebaseFirestore.collection('inspections')
+              .where("locationId", isEqualTo: ap.administratorModel.locationId)
+              .where("status", isEqualTo: "EN PROGRESO")
+              .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:syta_admin/screens/add_car_form.dart';
+import 'package:syta_admin/screens/check_complete_inspections.dart';
+
 class ClientInfo extends StatelessWidget {
   final String clientId;
   final String name;
@@ -81,11 +83,31 @@ class ClientInfo extends StatelessWidget {
                     ),
                     const SizedBox(height: 10.0),
                     for (var carData in carsData) ...[
-                      Text(
-                        'Auto:',
-                        style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                      Row(
+                        children: [
+                          Text(
+                            'Auto:',
+                            style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CheckCompletedInspections(
+                                    carName: carData['name'], 
+                                    userId: clientId,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              carData['name'],
+                              style: const TextStyle(fontSize: 18.0),
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(carData['name'], style: const TextStyle(fontSize: 18.0)),
                       const SizedBox(height: 10.0),
                       Text(
                         'Placas:',

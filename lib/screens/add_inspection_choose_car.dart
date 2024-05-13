@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:syta_admin/model/administrator_model.dart';
+import 'package:syta_admin/screens/client_form.dart';
 import 'package:syta_admin/screens/main_screen.dart';
 import 'package:syta_admin/screens/add_inspection_create.dart';
 
@@ -46,7 +47,6 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
@@ -71,20 +71,7 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Numero del cliente:"+widget.numero, textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 20, // Tamaño de la letra en puntos
-                  fontWeight: FontWeight.bold, // Texto en negrita
-                )
-            ),
-            const SizedBox(height: 10,),
-            Text("Paso 2. Selecciona el carro",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 24, // Tamaño de la letra en puntos
-                  fontWeight: FontWeight.bold, // Texto en negrita
-                )
-            ),
+            
             SizedBox(height: 20,),
             FutureBuilder<void>(
               future: Future.wait([getUserId(widget.numero)]),
@@ -126,53 +113,84 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
                           String name = carData['name'];
                           String plates = carData['plates'];
 
-                          return Center(
-                            child: Container(
-                              //width: 200,
-                              margin: EdgeInsets.all(10),
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.greenAccent, // Color de fondo del Container
-                                borderRadius: BorderRadius.circular(10), // Radio de borde del Container
-                              ),
-                              child: Row(
-                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-
-                                    },
-                                    icon: Icon(Icons.car_repair_outlined),
-                                    iconSize: 32,
+                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Numero del cliente:" + widget.numero,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  SizedBox(width: 10),
-                                  GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => CreateInspection(
-                                              carId: carId,
-                                              userId: userId,
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  "Paso 2. Selecciona el carro",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.all(10),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.greenAccent,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(Icons.car_repair_outlined),
+                                        iconSize: 32,
+                                      ),
+                                      SizedBox(width: 10),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CreateInspection(
+                                                carId: carId,
+                                                userId: userId,
+                                              ),
                                             ),
+                                          );
+                                        },
+                                        child: Container(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                name,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Modelo: " + model,
+                                                style: TextStyle(fontSize: 12),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                              Text(
+                                                "Placas: " + plates,
+                                                style: TextStyle(fontSize: 12),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ],
                                           ),
-                                        );
-
-                                      },
-                                      child: Container(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(name,
-                                              style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),),
-                                            Text("Modelo: "+model, style: TextStyle(fontSize: 12),textAlign: TextAlign.left,),
-                                            Text("Placas: "+plates, style: TextStyle(fontSize: 12),textAlign: TextAlign.left,),
-                                          ],
                                         ),
-                                      )
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           );
                         },
@@ -187,11 +205,21 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
                     children: [
                       Text("El usuario no existe",
                           style: TextStyle(
-                            fontSize: 24, // Tamaño de la letra en puntos
-                            fontWeight: FontWeight.bold, // Texto en negrita
+                            fontSize: 24, 
+                            fontWeight: FontWeight.bold, 
                           )
                       ),
-                      ElevatedButton(onPressed: (){}, child: Text("Crear cuenta a Usuario"))
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ClientForm(fromAddInspectionCar: true),
+                            ),
+                          );
+                        },
+                        child: Text("Crear cuenta a Usuario")
+                      ),
                     ],
                   ),
                 );
@@ -202,5 +230,4 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
       ),
     );
   }
-
 }
