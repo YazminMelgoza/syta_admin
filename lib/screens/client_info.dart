@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:syta_admin/screens/add_car_form.dart';
-import 'package:syta_admin/screens/check_completed_inspections.dart';
+import 'package:syta_admin/screens/check_complete_inspections.dart';
+
+import 'check_complete_inspections.dart';
 
 class ClientInfo extends StatelessWidget {
   final String clientId;
@@ -20,6 +22,7 @@ class ClientInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: Text(
           "Usuario",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
