@@ -11,12 +11,12 @@ class CarForm extends StatefulWidget {
 }
 
 final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-Future<void> addNewCarToClient(String clientId, String carMake, String model, String year) async {
+Future<void> addNewCarToClient(String clientId, String carMake, String carModel, String year) async {
   try {
     // Add car data to 'cars' collection with the provided client ID
     await _firebaseFirestore.collection("cars").add({
       "plates": carMake,
-      "name": carMake,
+      "name": carModel,
       "model": year,
       "actualUserId": clientId, // Use the provided client ID here
     });
