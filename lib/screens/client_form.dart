@@ -11,7 +11,7 @@ class ClientForm extends StatefulWidget {
   State<ClientForm> createState() => _ClientFormState();
 }
 final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-Future<void> addNewClientAndCar(String name, String email, String phone, String carMake, String model, String year) async {
+Future<void> addNewClientAndCar(String name, String email, String phone) async {
   try{
     DocumentReference userDocRef = await _firebaseFirestore.collection("users").add({
       "name": name,
@@ -24,10 +24,6 @@ Future<void> addNewClientAndCar(String name, String email, String phone, String 
 
     // Add car data to 'cars' collection with the captured user ID
     await _firebaseFirestore.collection("cars").add({
-      "plates": carMake,
-      "name": carMake,
-      "model": year,
-      "actualUserId": userId, // Include the user ID here
     });
   } catch (error) {
     // Handle errors
@@ -150,7 +146,7 @@ class _ClientFormState extends State<ClientForm> {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save(); // Save form data
                           // Handle form submission logic here
-                          addNewClientAndCar(_name, _email, _phone, _carMake, _carModel, _carYear);
+                          addNewClientAndCar(_name, _email, _phone,);
                           // You can update the database or perform other actions
                           print("Cliente actualizado: $_name, $_email, $_phone");
                           // You can show a success message or navigate elsewhere
