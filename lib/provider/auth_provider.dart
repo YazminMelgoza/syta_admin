@@ -29,7 +29,16 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider() {
     checkSign();
   }
-
+  DocumentReference<Map<String, dynamic>> getDocReferenceForCurrentUser() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Replace 'users' with the actual collection name where user documents reside
+      final docRef = FirebaseFirestore.instance.collection('administrators').doc(user.uid);
+      return docRef;
+    } else {
+      throw Exception('No user logged in'); // Or display an error message
+    }
+  }
   void checkSign() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     _isSignedIn = s.getBool("is_signedin") ?? false;
