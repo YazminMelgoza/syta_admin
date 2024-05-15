@@ -103,7 +103,7 @@ class _ClientFormState extends State<ClientForm> {
                       onSaved: (newValue) => _email = newValue ?? "",
                     ),
                     SizedBox(height: 20.0),
-                    
+
                     TextFormField(
                       controller: phoneController,
                       onChanged:(value) => setState(() {phoneController.text = value;}),
