@@ -6,14 +6,18 @@ class MenuItem {
   final String subTitle; 
   final String link;
   final IconData icon;
+  final String phone;
 
   const MenuItem ({
     required this.clientId,
     required this.title,
     required this.subTitle,
     required this.link,
-    required this.icon
+    required this.icon,
+    required this.phone,
   });
+
+
 
 }
 

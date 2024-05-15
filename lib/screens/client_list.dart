@@ -70,6 +70,7 @@ class ClientList extends StatelessWidget {
       title: data['name'] ?? 'No Name', // Handle missing data gracefully
       subTitle: data['email'] ?? 'No Email',
       clientId: doc.id,
+      phone: data['phoneNumber'] ?? 'No Phone',
       link: '/buttons', // Assuming you have a ClientInfo screen
       icon: Icons.person,
     );
@@ -127,7 +128,7 @@ class _CustomListTile extends StatelessWidget {
                 clientId: menuItem.clientId, // Pass client ID
                 name: menuItem.title,
                 email: menuItem.subTitle,
-                phone: '', // Add phone number here if available
+                phone: menuItem.phone, // Add phone number here if available
               ),
             ),
           );
