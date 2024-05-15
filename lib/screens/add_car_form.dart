@@ -3,41 +3,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CarForm extends StatefulWidget {
-  const CarForm({Key? key}) : super(key: key);
+  final String clientId; // Add clientId parameter
+  const CarForm({super.key, required this.clientId});
 
   @override
   State<CarForm> createState() => _CarFormState();
 }
+
 final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-Future<void> addNewClientAndCar(String name, String email, String phone, String carMake, String model, String year) async {
-  try{
-    DocumentReference userDocRef = await _firebaseFirestore.collection("users").add({
-      "name": name,
-      "email": email,
-      "phoneNumber": phone,
-    });
-
-    // Capture the user ID (document ID)
-    String userId = userDocRef.id;
-
-    // Add car data to 'cars' collection with the captured user ID
+Future<void> addNewCarToClient(String clientId, String carMake, String carModel, String year) async {
+  try {
+    // Add car data to 'cars' collection with the provided client ID
     await _firebaseFirestore.collection("cars").add({
       "plates": carMake,
-      "name": carMake,
+      "name": carModel,
       "model": year,
-      "actualUserId": userId, // Include the user ID here
+      "actualUserId": clientId, // Use the provided client ID here
     });
   } catch (error) {
     // Handle errors
-    print('Error adding data: $error');
+    print('Error adding car: $error');
   }
-
 }
+
 class _CarFormState extends State<CarForm> {
   final _formKey = GlobalKey<FormState>(); // Key for form validation
-  String _name = ""; // Stores client name
-  String _email = ""; // Stores client email
-  String _phone = ""; // Stores client phone number
   String _carMake = ""; // Stores car make
   String _carModel = ""; // Stores car model
   String _carYear = ""; // Stores car year
@@ -102,14 +92,12 @@ class _CarFormState extends State<CarForm> {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save(); // Save form data
                           // Handle form submission logic here
-                          addNewClientAndCar(_name, _email, _phone, _carMake, _carModel, _carYear);
-                          // You can update the database or perform other actions
-                          print("Cliente actualizado: $_name, $_email, $_phone");
-                          // You can show a success message or navigate elsewhere
+                          addNewCarToClient(widget.clientId, _carMake, _carModel, _carYear );
+                          // You can update the database or perform other action// You can show a success message or navigate elsewhere
                         }
                         Navigator.pop(context);
                       },
-                      child: const Text("Guardar Cliente"),
+                      child: const Text("Guardar Auto"),
                     )),
                   ],
                 ),

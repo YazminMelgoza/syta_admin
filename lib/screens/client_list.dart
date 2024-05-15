@@ -56,9 +56,11 @@ class ClientList extends StatelessWidget {
   }
 
   Future<List<MenuItem>> _fetchClientData() async {
-    final snapshot =
-    await FirebaseFirestore.instance.collection('users').get();
-    return snapshot.docs.map((doc) => _menuItemFromDoc(doc)).toList();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .get(); // Get all documents with a query
+
+    return querySnapshot.docs.map((doc) => _menuItemFromDoc(doc)).toList();
   }
 
   // Function to create a MenuItem from a DocumentSnapshot
@@ -67,7 +69,7 @@ class ClientList extends StatelessWidget {
     return MenuItem(
       title: data['name'] ?? 'No Name', // Handle missing data gracefully
       subTitle: data['email'] ?? 'No Email',
-      clientId: data['uid'] ?? '616kTidVW5dfOE1CTBAV0c18V5l1',
+      clientId: doc.id,
       link: '/buttons', // Assuming you have a ClientInfo screen
       icon: Icons.person,
     );
