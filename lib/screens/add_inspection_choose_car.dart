@@ -5,6 +5,8 @@ import 'package:syta_admin/screens/client_form.dart';
 import 'package:syta_admin/screens/main_screen.dart';
 import 'package:syta_admin/screens/add_inspection_create.dart';
 
+import 'add_car_form.dart';
+
 
 
 class AddInspectionCar extends StatefulWidget {
@@ -70,7 +72,202 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
           children: [
             
             SizedBox(height: 20,),
-            FutureBuilder<void>(
+
+            StreamBuilder<QuerySnapshot>(
+              stream: _firebaseFirestore.collection("users").where("phoneNumber", isEqualTo: widget.numero).snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Muestra un indicador de carga mientras se espera la respuesta de la base de datos
+                  return CircularProgressIndicator();
+                }
+                if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                  var firstDocument = snapshot.data!.docs.first;
+                  userId = firstDocument.id;
+
+                } else {
+                  userId = "";
+                }
+                return (userId != "") ?  StreamBuilder<QuerySnapshot>(
+
+                  stream: _firebaseFirestore.collection('cars').where("actualUserId", isEqualTo: userId).snapshots(),
+                  builder: (context, snapshot)
+                  {
+                    print(userId);
+                    if (snapshot.connectionState == ConnectionState.waiting)
+                    {
+                      print(userId);
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError)
+                    {
+                      return Text('Error al obtener los datos: ${snapshot.error}');
+                    }
+                    if (!snapshot.hasData)
+                    {
+                      return Text('No hay documentos disponibles');
+                    }
+
+                    List<QueryDocumentSnapshot> cars = snapshot.data!.docs;
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          (cars.isNotEmpty) ? Expanded(
+                            child:  ListView.builder(
+                              itemCount: cars.length,
+                              itemBuilder: (context, index) {
+                                Map<String, dynamic> carData = cars[index].data() as Map<String, dynamic>;
+                                String carId = cars[index].id;
+                                String model = carData['model'];
+                                String name = carData['name'];
+                                String plates = carData['plates'];
+
+                                return Container(
+                                  margin: EdgeInsets.symmetric(vertical: 10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Numero del cliente:" + widget.numero,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        "Paso 2. Selecciona el carro",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.all(10),
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.greenAccent,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {},
+                                              icon: Icon(Icons.car_repair_outlined),
+                                              iconSize: 32,
+                                            ),
+                                            SizedBox(width: 10),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => CreateInspection(
+                                                      carId: carId,
+                                                      userId: userId,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      name,
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Modelo: " + model,
+                                                      style: TextStyle(fontSize: 12),
+                                                      textAlign: TextAlign.left,
+                                                    ),
+                                                    Text(
+                                                      "Placas: " + plates,
+                                                      style: TextStyle(fontSize: 12),
+                                                      textAlign: TextAlign.left,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ): Container(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Numero del cliente:" + widget.numero,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              Text(
+                                "El Usuario no cuenta con ningún carro actualmente...",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),),
+                          SizedBox(height: 20,),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => CarForm(clientId: userId)),
+                              );
+                            },
+                            child: const Text('Agregar Auto'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ) :
+                Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("El usuario no existe",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          )
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ClientForm(fromAddInspectionCar: true),
+                              ),
+                            );
+                          },
+                          child: Text("Crear cuenta a Usuario")
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+
+
+
+            /*FutureBuilder<void>(
               future: Future.wait([getUserId(widget.numero)]),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting)
@@ -221,7 +418,7 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
                   ),
                 );
           },
-        ),
+        ),*/
           ],
         ),
       ),
