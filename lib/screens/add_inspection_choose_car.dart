@@ -24,18 +24,15 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
   {
     try {
       await _firebaseFirestore.collection("users").where("phoneNumber", isEqualTo: userPhone).get().then(
-            (querySnapshot) {
+            (querySnapshot)
+        {
           print("Successfully completed");
+            for (var docSnapshot in querySnapshot.docs)
+            {
+                print('${docSnapshot.id} => ${docSnapshot.data()}');
 
-            for (var docSnapshot in querySnapshot.docs) {
-              print('${docSnapshot.id} => ${docSnapshot.data()}');
-              
                 userId = docSnapshot.id;
-
             }
-
-
-
         },
         onError: (e) => print("Error completing: $e"),
       );

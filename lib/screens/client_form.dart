@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:syta_admin/screens/check_inspections.dart';
@@ -18,13 +19,6 @@ Future<void> addNewClientAndCar(String name, String email, String phone) async {
       "email": email,
       "phoneNumber": phone,
     });
-
-    // Capture the user ID (document ID)
-    String userId = userDocRef.id;
-
-    // Add car data to 'cars' collection with the captured user ID
-    await _firebaseFirestore.collection("cars").add({
-    });
   } catch (error) {
     // Handle errors
     print('Error adding data: $error');
@@ -32,6 +26,7 @@ Future<void> addNewClientAndCar(String name, String email, String phone) async {
 
 }
 class _ClientFormState extends State<ClientForm> {
+  final TextEditingController phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // Key for form validation
   String _name = ""; // Stores client name
   String _email = ""; // Stores client email
@@ -39,6 +34,18 @@ class _ClientFormState extends State<ClientForm> {
   String _carMake = ""; // Stores car make
   String _carModel = ""; // Stores car model
   String _carYear = ""; // Stores car year
+  Country selectedCountry = Country(
+    phoneCode: "52",
+    countryCode: "MX",
+    e164Sc: 0,
+    geographic: true,
+    level: 1,
+    name:  "Mexico",
+    example: "Mexico",
+    displayName: "Mexico",
+    displayNameNoCountryCode: "Mexico",
+    e164Key: "",
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -96,62 +103,88 @@ class _ClientFormState extends State<ClientForm> {
                       onSaved: (newValue) => _email = newValue ?? "",
                     ),
                     SizedBox(height: 20.0),
+                    
                     TextFormField(
-                      initialValue: _phone,
-                      decoration: const InputDecoration(
-                        labelText: "Teléfono:",
+                      controller: phoneController,
+                      onChanged:(value) => setState(() {phoneController.text = value;}),
+                      cursorColor: Theme.of(context).primaryColor,
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
                       ),
-                      keyboardType: TextInputType.phone, // Set keyboard type
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Por favor ingrese un número de teléfono.";
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) => _phone = newValue ?? "",
-                    ),
-                    SizedBox(height: 40.0),
-                    /*Text(
-                      'Vehículos Personales:',
-                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 20.0),
-                    TextFormField(
-                      initialValue: _carMake,
-                      decoration: const InputDecoration(
-                        labelText: "Placas:",
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: 'Número de teléfono',
+                        prefixIcon: Container(
+                            padding: const EdgeInsets.all(12.0),
+                            child: InkWell(
+                                onTap: () {
+                                  showCountryPicker(
+                                      context: context,
+                                      countryListTheme: CountryListThemeData(
+                                          flagSize: 30.0,
+                                          bottomSheetHeight: 450.0,
+                                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                                          textStyle: const TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold
+                                          )
+                                      ),
+                                      showPhoneCode: true,
+                                      onSelect: (Country country) {
+                                        setState(() {
+                                          selectedCountry = country;
+                                        });
+                                      }
+                                  );
+                                },
+                                child: Text(
+                                    '${selectedCountry.flagEmoji} +${selectedCountry.phoneCode}',
+                                    style: const TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold
+                                    )
+                                )
+                            )
+                        ),
+                        suffixIcon: phoneController.text.length > 9 ?
+                        Container(
+                            height: 30,
+                            width: 30,
+                            margin: const EdgeInsets.all(10.0),
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.green
+                            ),
+                            child: const Icon(
+                                Icons.done,
+                                color: Colors.white,
+                                size: 20.0
+                            )
+                        ) : null,
+                        border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12.0))
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
-                      onSaved: (newValue) => _carMake = newValue ?? "",
                     ),
-                    SizedBox(height: 20.0),
-                    TextFormField(
-                      initialValue: _carModel,
-                      decoration: const InputDecoration(
-                        labelText: "Modelo:",
-                      ),
-                      onSaved: (newValue) => _carModel = newValue ?? "",
-                    ),
-                    SizedBox(height: 20.0),
-                    TextFormField(
-                      initialValue: _carYear,
-                      decoration: const InputDecoration(
-                        labelText: "Año:",
-                      ),
-                      keyboardType: TextInputType.number, // Set keyboard type
-                      onSaved: (newValue) => _carYear = newValue ?? "",
-                    ),*/
+
                     SizedBox(height: 20.0),
                     Padding(padding: EdgeInsets.only(left:180),child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save(); // Save form data
-                          // Handle form submission logic here
+
+                          String phoneNumber = phoneController.text.trim();
+                          _phone = "+${selectedCountry.phoneCode}$phoneNumber";
                           addNewClientAndCar(_name, _email, _phone,);
                           // You can update the database or perform other actions
                           print("Cliente actualizado: $_name, $_email, $_phone");
                           // You can show a success message or navigate elsewhere
+                          Navigator.pop(context);
                         }
-                        if (widget.fromAddInspectionCar) {
+                        /*if (widget.fromAddInspectionCar) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -160,7 +193,7 @@ class _ClientFormState extends State<ClientForm> {
                           );
                         } else {
                           Navigator.pop(context);
-                        }
+                        }*/
                       },
                       child: const Text("Guardar Cliente"),
                     )),
