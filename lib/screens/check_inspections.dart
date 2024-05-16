@@ -20,45 +20,50 @@ class _CheckInspectionsState extends State<CheckInspections> {
   String carName = "";
   String userName = "";
 
-  Future<void> getCarName(carId) async {
+
+  Future<String> getCarName(carId) async {
     try {
       final docRef = _firebaseFirestore.collection("cars").doc(carId);
       DocumentSnapshot doc = await docRef.get();
       if (doc.exists) {
         final carData = doc.data() as Map<String, dynamic>;
-        carName = carData['name'];
-        print("Nombre del carro: $carName");
-
-        // Aquí puedes continuar con el resto del código que depende de carName
+        carName = carData['name']!;
       } else {
         print("El documento no existe");
+        carName = "No carro";
       }
+      return carName;
     } catch (e) {
       print("Error obteniendo el documento: $e");
+      carName = "Error";
+      return carName;
     }
   }
 
-  Future<void> getUserName(userId) async {
+  Future<String> getUserName(userId) async {
     try {
       final docRef = _firebaseFirestore.collection("users").doc(userId);
       DocumentSnapshot doc = await docRef.get();
       if (doc.exists) {
         final carData = doc.data() as Map<String, dynamic>;
         userName = carData['name'];
-        print("Nombre del usuario: $userName");
 
-        // Aquí puedes continuar con el resto del código que depende de carName
       } else {
         print("El documento no existe");
+        userName = "No name";
       }
+      return userName;
     } catch (e) {
       print("Error obteniendo el documento: $e");
+      userName = "Error";
+      return userName!;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
+
 
     return Scaffold(
       appBar: AppBar(
@@ -127,12 +132,14 @@ class _CheckInspectionsState extends State<CheckInspections> {
               if (!snapshot.hasData) {
                 return const Text('No hay documentos disponibles');
               }
+
               List<QueryDocumentSnapshot> inspections = snapshot.data!.docs;
 
               return Expanded(
                 child: ListView.builder(
                   itemCount: inspections.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (context, index)
+                  {
                     Map<String, dynamic> inspectionData = inspections[index].data() as Map<String, dynamic>;
                     //Datos de la inspección
                     String inspectionId    = inspections[index].id;
@@ -150,16 +157,41 @@ class _CheckInspectionsState extends State<CheckInspections> {
                     DateTime startNormalDate = DateTime.fromMillisecondsSinceEpoch(milliseconsDate);
                     String date = "${startNormalDate.year}-${startNormalDate.month.toString().padLeft(2, '0')}-${startNormalDate.day.toString().padLeft(2, '0')}";
 
-                    return FutureBuilder<void>(
-                      future: Future.wait([getCarName(carId), getUserName(userId)]),
-                      builder: (context, snapshot) {
+                    String userName = userId;
+                    String carName =  carId;
+
+                    // Obtener el nombre del carro (carName) utilizando el carId
+                    Future<String> getCarName(String carId) async {
+                      DocumentSnapshot carSnapshot = await _firebaseFirestore.collection('cars').doc(carId).get();
+                      return carSnapshot.get('name');
+                    }
+
+                    // Obtener el nombre del usuario (userName) utilizando el userId
+                    Future<String> getUserName(String userId) async {
+                      DocumentSnapshot userSnapshot = await _firebaseFirestore.collection('users').doc(userId).get();
+                      return userSnapshot.get('name');
+                    }
+
+                    return FutureBuilder(
+                      future: Future.wait([
+                        getCarName(carId),
+                        getUserName(userId),
+                      ]),
+                      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
+                          return CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtienen los datos.
                         }
                         if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
+                          return Text('Error al obtener los datos: ${snapshot.error}');
+                        }
+                        if (!snapshot.hasData) {
+                          return Text('No hay datos disponibles');
                         }
 
+                        String carName = snapshot.data![0]; // Obtiene el nombre del carro
+                        String userName = snapshot.data![1]; // Obtiene el nombre del usuario
+
+                        // Ahora puedes usar carName y userName en tu UI
                         return Center(
                           child: Container(
                             margin: const EdgeInsets.all(10),
@@ -183,8 +215,9 @@ class _CheckInspectionsState extends State<CheckInspections> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>  InspectionScreen(
-                                            inspectionId: inspectionId,
-                                            carName: carName
+                                          inspectionId: inspections[index].id,
+                                          carName: carName,
+
                                         ),
                                       ),
                                     );
@@ -193,9 +226,10 @@ class _CheckInspectionsState extends State<CheckInspections> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(carName, style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),),
-                                        Text(userName, style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),),
-                                        Text("Fecha estimada: "+date, style: TextStyle(fontSize: 12),textAlign: TextAlign.left,),
+                                        Text(inspectionData['title'], style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),),
+                                        Text(carName, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,),),
+                                        Text(userName, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,),),
+                                        Text("Fecha estimada: ${inspectionData['estimatedDate']}", style: TextStyle(fontSize: 12),textAlign: TextAlign.left,),
                                       ],
                                     ),
                                   ),

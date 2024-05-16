@@ -7,6 +7,8 @@ import 'package:syta_admin/screens/inspection_Adddetail_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:syta_admin/screens/main_screen.dart';
+
 class InspectionScreen extends StatefulWidget {
   final String inspectionId;
   final String carName;
@@ -24,10 +26,45 @@ class _InspectionScreenState extends State<InspectionScreen> {
   {
     _firebaseFirestore.collection("inspectionDetails").doc(id).update({"status": status, "endDate": dateF});
   }
-  void finalizarInspeccion( String id, String statusIns)
+
+
+  void finalizarInspeccion(BuildContext context, String id, String statusIns)
   {
-    _firebaseFirestore.collection("inspections").doc(id).update({"status": statusIns});
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmar finalización"),
+          content: const Text("¿Estás seguro de que quieres finalizar esta revisión?, El cliente sabrá que ya puede pasar por su automovil"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+              },
+              child: Text("Cancelar"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Actualiza la inspección y cierra la pantalla
+                String currentTimeInMillis = DateTime.now().millisecondsSinceEpoch.toString();
+                _firebaseFirestore.collection("inspections").doc(id).update(
+                    {
+                      "status": statusIns,
+                      "endDate": currentTimeInMillis
+                    }
+                );
+                Navigator.pop(context); // Cierra la pantalla actual
+                Navigator.pop(context); // Cierra la ventana modal
+              },
+              child: Text("Confirmar"),
+            ),
+          ],
+        );
+      },
+    );
   }
+
+
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
@@ -40,16 +77,13 @@ class _InspectionScreenState extends State<InspectionScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              ap.userSignOut().then(
-                    (value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CheckInspections(),
-                      ),
-                    ),
-                  );
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MainScreen(),
+                  ), (route) => false);
             },
-            icon: const Icon(Icons.exit_to_app, color: Colors.white),
+            icon: const Icon(Icons.home, color: Colors.white),
           ),
         ],
       ),
@@ -66,6 +100,28 @@ class _InspectionScreenState extends State<InspectionScreen> {
                 fontSize: 20, // Tamaño del título
                 fontWeight: FontWeight.bold, // Negrita para un aspecto de título
 
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (!context.mounted) return;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  InspectionAddDetailScreen(
+                        inspectionId: widget.inspectionId
+                    ),
+                  ),
+                );
+
+
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFFC4C00),
+              ),
+              child: Text(
+                "+ Actualización",
+                style: TextStyle(color: Colors.white),
               ),
             ),
 
@@ -180,39 +236,12 @@ class _InspectionScreenState extends State<InspectionScreen> {
           );
         },
       ),
-      ElevatedButton(
-        onPressed: () {
-          if (!context.mounted) return;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>  InspectionAddDetailScreen(
-                  inspectionId: widget.inspectionId
-              ),
-            ),
-          );
 
-
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFFC4C00),
-        ),
-        child: Text(
-          "Agregar Actualización",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
       SizedBox(height: 20),
       ElevatedButton(
         onPressed: () {
           if (!context.mounted) return;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>  CheckInspections(),
-            ),
-          );
-          finalizarInspeccion(widget.inspectionId, "FINALIZADO");
+          finalizarInspeccion(context,widget.inspectionId, "FINALIZADO");
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Color.fromARGB(255, 9, 8, 99),
