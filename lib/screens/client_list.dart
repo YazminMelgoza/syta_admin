@@ -58,7 +58,7 @@ class ClientList extends StatelessWidget {
   Future<List<MenuItem>> _fetchClientData() async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('users')
-        .get(); // Get all documents with a query
+        .get();
 
     return querySnapshot.docs.map((doc) => _menuItemFromDoc(doc)).toList();
   }
@@ -109,7 +109,7 @@ class _CustomListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(5.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         color: Colors.white,

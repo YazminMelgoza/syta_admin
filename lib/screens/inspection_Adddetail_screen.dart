@@ -4,6 +4,8 @@ import 'package:syta_admin/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:syta_admin/screens/check_inspections.dart';
+
+import 'package:syta_admin/screens/main_screen.dart';
 class InspectionAddDetailScreen extends StatefulWidget {
   final String inspectionId;
 
@@ -43,20 +45,17 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text("SYTA  ${ap.locationModel.name}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+        title: Text("Agregar Actualización", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
           IconButton(
             onPressed: () {
-              ap.userSignOut().then(
-                    (value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CheckInspections(),
-                      ),
-                    ),
-                  );
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MainScreen(),
+                  ), (route) => false);
             },
-            icon: const Icon(Icons.exit_to_app, color: Colors.white),
+            icon: const Icon(Icons.home, color: Colors.white),
           ),
         ],
       ),
