@@ -58,7 +58,6 @@ class ClientList extends StatelessWidget {
   Future<List<MenuItem>> _fetchClientData() async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('users')
-        .limit(10)
         .get();
 
     return querySnapshot.docs.map((doc) => _menuItemFromDoc(doc)).toList();
