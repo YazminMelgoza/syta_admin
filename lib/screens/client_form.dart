@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; 
 import 'package:syta_admin/screens/check_inspections.dart';
 
 class ClientForm extends StatefulWidget {
@@ -113,6 +114,9 @@ class _ClientFormState extends State<ClientForm> {
                         fontWeight: FontWeight.bold,
                       ),
                       keyboardType: TextInputType.phone,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly, 
+                      ],
                       decoration: InputDecoration(
                         hintText: 'Número de teléfono',
                         prefixIcon: Container(

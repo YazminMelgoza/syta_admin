@@ -36,20 +36,20 @@ class ClientList extends StatelessWidget {
           ),
         ],
       ),
-      body: FutureBuilder<List<MenuItem>>(
-        future: _fetchClientData(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('users').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final List<MenuItem> clientList = snapshot.data!;
+          final List<MenuItem> clientList = snapshot.data!.docs.map((doc) => _menuItemFromDoc(doc)).toList();
 
-          return _ListView(clientList: clientList); // Pass clientList to _ListView
+          return _ListView(clientList: clientList); 
         },
       ),
     );
