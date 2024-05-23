@@ -230,7 +230,7 @@ class _CheckInspectionsState extends State<CheckInspections> {
                                           Text(inspectionData['title'], style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,), overflow: TextOverflow.ellipsis, maxLines: 1,),
                                           Text(carName, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,), overflow: TextOverflow.ellipsis, maxLines: 1,),
                                           Text(userName, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,), overflow: TextOverflow.ellipsis, maxLines: 1,),
-                                          Text("Fecha estimada: ${inspectionData['estimatedDate']}", style: TextStyle(fontSize: 12),textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 1,),
+                                          Text("Fecha estimada: ${date}", style: TextStyle(fontSize: 12),textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 1,),
                                         ],
                                       ),
                                     ),
