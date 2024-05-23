@@ -70,7 +70,7 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Agregar Actualización",textAlign: TextAlign.left,
+                    Text("AgregarA Actualización",textAlign: TextAlign.left,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -78,10 +78,10 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
                     ),
                   ],
                 ),
-
+                const SizedBox(height: 20),
                 TextField(
                   controller: _controller,
-                  maxLines: null, // Esto permite que el campo de texto sea multilinea
+                  maxLines: 2, // Esto permite que el campo de texto sea multilinea
                   keyboardType: TextInputType.multiline, // Esto también permite que el campo de texto sea multilinea
                   decoration: const InputDecoration(
                     labelText: 'Descripción', // Etiqueta del campo de texto
@@ -105,6 +105,16 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
 
                 ElevatedButton(
                   onPressed: (){
+                    String inputText = _controller.text;
+
+                    if (inputText.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('La descripción no puede estar vacía'),
+                        ),
+                      );
+                      return; // Cancelar el resto de la ejecución
+                    }
                     String status = "";
                     String dateF = "";
                     String dateI = "";
@@ -118,7 +128,7 @@ class _InspectionAddDetailScreenState extends State<InspectionAddDetailScreen> {
                     {
                       status="EN PROGRESO";
                     }
-                    addDetail(widget.inspectionId,_controller.text,status,dateF,dateI);
+                    addDetail(widget.inspectionId,inputText,status,dateF,dateI);
                     if (!context.mounted) return;
                     Navigator.pop(context);
                   },

@@ -67,12 +67,11 @@ class _CreateInspectionState extends State<CreateInspection> {
         ],
       ),
       body: Container(
-        margin: EdgeInsets.all(30.0),
+        margin: EdgeInsets.symmetric(horizontal: 30.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
             Row(
               children: [
                 Expanded(
@@ -204,19 +203,66 @@ class _CreateInspectionState extends State<CreateInspection> {
                     onPressed: ()
                     {
                       String fechaString = estimatedDate.text;
-                      DateTime fecha = DateTime.parse(fechaString);
+                      String descripcion = description.text; // Obtener el texto de la descripción
+                      String titulo = title.text; // Obtener el texto del título
+
+                      // Validación para verificar si la fecha es válida antes de parsear
+                      DateTime? fecha;
+                      try {
+                        fecha = DateTime.parse(fechaString);
+                      } catch (e) {
+                        fecha = null;
+                      }
+
+                      if (fecha == null || fechaString.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('La fecha no es válida o está vacía'),
+                          ),
+                        );
+                        return; // Cancelar el resto de la ejecución
+                      }
+
                       String fechamilisegundos = fecha.millisecondsSinceEpoch.toString();
                       String tiempoActual = DateTime.now().millisecondsSinceEpoch.toString();
 
+                      if (fechamilisegundos.trim().isEmpty || tiempoActual.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Los milisegundos de la fecha o el tiempo actual están vacíos'),
+                          ),
+                        );
+                        return; // Cancelar el resto de la ejecución
+                      }
+
+                      if (descripcion.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('La descripción no puede estar vacía'),
+                          ),
+                        );
+                        return; // Cancelar el resto de la ejecución
+                      }
+
+                      if (titulo.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('El título no puede estar vacío'),
+                          ),
+                        );
+                        return; // Cancelar el resto de la ejecución
+                      }
+
+
                       final data = {
                         "carId": widget.carId,
-                        "description": description.text,
+                        "description": descripcion,
                         "endDate": "",
                         "estimatedDate": fechamilisegundos,
                         "locationId": ap.administratorModel.locationId,
                         "startDate": tiempoActual,
                         "status": "EN PROGRESO",
-                        "title": title.text,
+                        "title": titulo,
                         "userId": widget.userId
                       };
 
