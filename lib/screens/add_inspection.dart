@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:syta_admin/screens/add_inspection_choose_car.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:syta_admin/screens/add_inspection_choose_car.dart';
 import 'package:syta_admin/screens/main_screen.dart';
 
 class AddInspection extends StatefulWidget {
-  const AddInspection({super.key});
+  const AddInspection({Key? key}) : super(key: key);
 
   @override
   State<AddInspection> createState() => _AddInspectionState();
@@ -28,7 +27,7 @@ class _AddInspectionState extends State<AddInspection> {
     e164Key: "",
   );
 
-
+  bool showError = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +35,23 @@ class _AddInspectionState extends State<AddInspection> {
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text("Agregar Revisión", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+        title: Text(
+          "Agregar Revisión",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
         actions: [
           IconButton(
             onPressed: () {
               Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MainScreen(),
-                  ), (route) => false);
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MainScreen(),
+                ),
+                    (route) => false,
+              );
             },
             icon: const Icon(Icons.home, color: Colors.white),
           ),
-
         ],
       ),
       body: Container(
@@ -57,16 +60,21 @@ class _AddInspectionState extends State<AddInspection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Paso 1. Ingresa el Numero de usuario:", textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 24, // Tamaño de la letra en puntos
-                  fontWeight: FontWeight.bold, // Texto en negrita
-                )
+            Text(
+              "Paso 1. Ingresa el Numero de usuario:",
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontSize: 24, // Tamaño de la letra en puntos
+                fontWeight: FontWeight.bold, // Texto en negrita
+              ),
             ),
             SizedBox(height: 20,),
             TextFormField(
               controller: phoneController,
-              onChanged:(value) => setState(() {phoneController.text = value;}),
+              onChanged:(value) => setState(() {
+                phoneController.text = value;
+                showError = false; // Reset error when text changes
+              }),
               cursorColor: Theme.of(context).primaryColor,
               style: const TextStyle(
                 fontSize: 16.0,
@@ -107,7 +115,7 @@ class _AddInspectionState extends State<AddInspection> {
                         )
                     )
                 ),
-                suffixIcon: phoneController.text.length > 9 ?
+                suffixIcon: phoneController.text.length > 9 || phoneController.text.length < 11?
                 Container(
                     height: 30,
                     width: 30,
@@ -122,8 +130,15 @@ class _AddInspectionState extends State<AddInspection> {
                         size: 20.0
                     )
                 ) : null,
-                border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0))
+                errorText: showError ? 'Número de teléfono inválido' : null,
+                errorStyle: TextStyle(color: Colors.red),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide(color: showError ? Colors.red : Theme.of(context).primaryColor, width: 2.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2.0),
                 ),
                 filled: true,
                 fillColor: Colors.white,
@@ -133,20 +148,25 @@ class _AddInspectionState extends State<AddInspection> {
             Align(
                 alignment: Alignment.center,
                 child: ElevatedButton(
-                    onPressed: ()
-                    {
+                    onPressed: () {
                       String phoneNumber = phoneController.text.trim();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddInspectionCar(
-                            numero: "+${selectedCountry.phoneCode}$phoneNumber",
+                      print(phoneNumber.length);
+                      if (phoneNumber.length <= 9 || phoneNumber.length >= 11) {
+                        setState(() {
+                          showError = true;
+                        });
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddInspectionCar(
+                              numero: "+${selectedCountry.phoneCode}$phoneNumber",
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     },
-                    child:
-                    Text("Buscar")
+                    child: Text("Buscar")
                 )
             ),
           ],
@@ -154,5 +174,4 @@ class _AddInspectionState extends State<AddInspection> {
       ),
     );
   }
-
 }
