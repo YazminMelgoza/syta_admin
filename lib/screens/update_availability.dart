@@ -187,9 +187,12 @@ class _UpdateAvail extends State<UpdateAvail> {
               SizedBox(height: 80),
               Row(children: [
                 Padding(padding: EdgeInsets.only(left: 20), child:
+                SizedBox(
+                  width: 200,
+                  child:
                 Text("Estado Actual de la sucursal:",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500))
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500))),
                 ),
                 SizedBox(width: 15),
                 _buildStatusIndicator(_status)

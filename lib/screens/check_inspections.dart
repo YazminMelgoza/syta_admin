@@ -193,6 +193,19 @@ class _CheckInspectionsState extends State<CheckInspections> {
 
                         // Ahora puedes usar carName y userName en tu UI
                         return Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => InspectionScreen(
+                                    inspectionId: inspectionId,
+                                    carName: carName,
+                                  ),
+                                ),
+                              );
+                            },
+
                           child: Container(
                             margin: const EdgeInsets.all(10),
                             padding: const EdgeInsets.all(10),
@@ -202,27 +215,13 @@ class _CheckInspectionsState extends State<CheckInspections> {
                             ),
                             child: Row(
                               children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.car_repair_rounded),
-                                  iconSize: 32,
+                                const Icon(
+                                  Icons.car_repair_rounded,
+                                  size: 32,
+                                  color: Colors.blue,
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (!context.mounted) return;
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>  InspectionScreen(
-                                            inspectionId: inspections[index].id,
-                                            carName: carName,
-                                  
-                                          ),
-                                        ),
-                                      );
-                                    },
                                     child: Container(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,10 +234,10 @@ class _CheckInspectionsState extends State<CheckInspections> {
                                       ),
                                     ),
                                   ),
-                                ),
                               ],
                             ),
                           ),
+                        ),
                         );
                       },
                     );

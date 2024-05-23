@@ -166,7 +166,25 @@ class _InspectionScreenState extends State<InspectionScreen> {
                 }
 
 
-                return Center(
+                return 
+                
+                        GestureDetector(
+                            onTap: () {
+                              if (!context.mounted) return;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => InspectionDetailScreen(
+                                      inspectionDetailId: documentId,
+                                      description: userData['description'],
+                                      endDate: endDate,
+                                      startDate: startDate,
+                                      status: userData['status']
+                                  ),
+                                ),
+                              );
+                            },
+                child: Center(
                   child: Container(
                     //width: 200,
                     margin: EdgeInsets.all(10),
@@ -201,23 +219,7 @@ class _InspectionScreenState extends State<InspectionScreen> {
                           iconSize: 32,
                         ),
                         SizedBox(width: 10),
-                        GestureDetector(
-                            onTap: () {
-                              if (!context.mounted) return;
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InspectionDetailScreen(
-                                      inspectionDetailId: documentId,
-                                      description: userData['description'],
-                                      endDate: endDate,
-                                      startDate: startDate,
-                                      status: userData['status']
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
+                        Container(
                               child: Column(
                                 children: [
                                   Text(userData['description'],
@@ -226,10 +228,10 @@ class _InspectionScreenState extends State<InspectionScreen> {
                                 ],
                               ),
                             )
-                        ),
+                    
                       ],
                     ),
-                  ),
+                  ),)
                 );
               },
             ),
