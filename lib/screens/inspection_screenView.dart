@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:syta_admin/screens/check_inspections.dart';
@@ -73,7 +74,7 @@ class _InspectionScreenViewState extends State<InspectionScreenView> {
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text("Revisión", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+        title: Text("Detalle de Revisión", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
         actions: [
           IconButton(
             onPressed: () {
@@ -159,52 +160,33 @@ class _InspectionScreenViewState extends State<InspectionScreenView> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            setState(() {
-                              isChecked = !isChecked;
-                            });
-                            String dateF = "";
-                            String status = "";
-                            if (userData['status']=="EN PROGRESO")
-                            {
-                              status = "FINALIZADO";
-                              DateTime now = DateTime.now();
-                              dateF = now.millisecondsSinceEpoch.toString();
-                            }else
-                            {
-                              status = "EN PROGRESO";
-                            }
-                            actualizarEstatus(documentId,status, dateF);
+
 
                           },
                           icon: (userStatus=="FINALIZADO") ? Icon(Icons.check_circle) : Icon(Icons.check_circle_outline),
                           iconSize: 32,
                         ),
                         SizedBox(width: 10),
-                        GestureDetector(
-                            onTap: () {
-                              if (!context.mounted) return;
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InspectionDetailScreen(
-                                      inspectionDetailId: documentId,
-                                      description: userData['description'],
-                                      endDate: endDate,
-                                      startDate: startDate,
-                                      status: userData['status']
-                                  ),
+                        Expanded(
+                          child: GestureDetector(
+                              onTap: () {
+
+                              },
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(userData['description'],
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),),
+                                    Text(endDate, overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style: TextStyle(fontSize: 15),),
+                                  ],
                                 ),
-                              );
-                            },
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  Text(userData['description'],
-                                    style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),),
-                                  Text(endDate, style: TextStyle(fontSize: 12),textAlign: TextAlign.left,),
-                                ],
-                              ),
-                            )
+                              )
+                          ),
                         ),
                       ],
                     ),
