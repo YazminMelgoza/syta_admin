@@ -91,7 +91,31 @@ class _CarFormState extends State<CarForm> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save(); // Save form data
-                          // Handle form submission logic here
+
+                          if (_carMake.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Las placas del coche no pueden estar vacías'),
+                              ),
+                            );
+                            return;
+                          }
+                          if (_carModel.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('El modelo del coche no puede estar vacío'),
+                              ),
+                            );
+                            return;
+                          }
+                          if (_carYear.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('El año del coche no puede estar vacío'),
+                              ),
+                            );
+                            return;
+                          }
                           addNewCarToClient(widget.clientId, _carMake, _carModel, _carYear );
                           // You can update the database or perform other action// You can show a success message or navigate elsewhere
                         }

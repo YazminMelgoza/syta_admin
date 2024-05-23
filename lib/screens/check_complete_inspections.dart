@@ -1,13 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'inspection_screen.dart';
 
 class CheckCompletedInspections extends StatelessWidget {
   final String carName;
   final String userId;
+  final String carIdHistorial;
 
   const CheckCompletedInspections({
     required this.carName,
     required this.userId,
+    required this.carIdHistorial,
   });
 
   @override
@@ -44,7 +49,7 @@ class CheckCompletedInspections extends StatelessWidget {
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('inspections')
-                .where('carId', isEqualTo: carId)
+                .where('carId', isEqualTo: carIdHistorial)
                 .where('status', isEqualTo: 'FINALIZADO')
                 .snapshots(),
             builder: (context, snapshot) {
@@ -65,6 +70,7 @@ class CheckCompletedInspections extends StatelessWidget {
                   Map<String, dynamic> inspectionData = inspections[index].data() as Map<String, dynamic>;
                   String description = inspectionData['description'];
                   String title = inspectionData['title'];
+                  String documentId = inspections[index].id;
 
                   return Center(
                     child: Container(
@@ -81,14 +87,34 @@ class CheckCompletedInspections extends StatelessWidget {
                             size: 32,
                           ),
                           const SizedBox(width: 10),
-                          GestureDetector(
-                            child: Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(title, style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),),
-                                  Text(description, style: TextStyle(fontSize: 12),textAlign: TextAlign.left,),
-                                ],
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                if (!context.mounted) return;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>  InspectionScreen(
+                                      inspectionId: documentId,
+                                      carName: carName,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(title,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),),
+                                    Text(description,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(fontSize: 12),textAlign: TextAlign.left,),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

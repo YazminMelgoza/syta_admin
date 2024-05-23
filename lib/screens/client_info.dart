@@ -76,6 +76,7 @@ class ClientInfo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: carsData.map((carDoc) {
                     final carData = carDoc.data() as Map<String, dynamic>;
+                    final carId = carDoc.id;
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,6 +95,7 @@ class ClientInfo extends StatelessWidget {
                                     builder: (context) => CheckCompletedInspections(
                                       carName: carData['name'],
                                       userId: clientId,
+                                      carIdHistorial: carId,
                                     ),
                                   ),
                                 );

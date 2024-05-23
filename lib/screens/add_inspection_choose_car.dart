@@ -72,6 +72,23 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
           children: [
             
             SizedBox(height: 20,),
+            Text(
+              "Numero del cliente:" + widget.numero,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              "Paso 2. Selecciona el carro",
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
 
             StreamBuilder<QuerySnapshot>(
               stream: _firebaseFirestore.collection("users").where("phoneNumber", isEqualTo: widget.numero).snapshots(),
@@ -122,27 +139,11 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
                                 String plates = carData['plates'];
 
                                 return Container(
-                                  margin: EdgeInsets.symmetric(vertical: 10),
+                                  margin: EdgeInsets.symmetric(vertical: 0),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "Numero del cliente:" + widget.numero,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "Paso 2. Selecciona el carro",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+
                                       Container(
                                         margin: EdgeInsets.all(10),
                                         padding: EdgeInsets.all(10),
@@ -242,10 +243,11 @@ class _AddInspectionCarState extends State<AddInspectionCar> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("El usuario no existe",
+                      SizedBox(height: 10,),
+                      Text("Ups, Parece que el usuario no tiene una cuenta, revisa el numero de telefono e intentalo de nuevo o crea una nueva cuenta al usuario",
                           style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+
                           )
                       ),
                       ElevatedButton(

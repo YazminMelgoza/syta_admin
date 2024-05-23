@@ -182,6 +182,33 @@ class _ClientFormState extends State<ClientForm> {
 
                           String phoneNumber = phoneController.text.trim();
                           _phone = "+${selectedCountry.phoneCode}$phoneNumber";
+                          if (_name.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('El nombre no puede estar vacío'),
+                              ),
+                            );
+                            return; // Cancelar el resto de la ejecución
+                          }
+
+                          if (_email.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('El email no puede estar vacío'),
+                              ),
+                            );
+                            return; // Cancelar el resto de la ejecución
+                          }
+
+                          if (phoneNumber.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('El teléfono no puede estar vacío'),
+                              ),
+                            );
+                            return; // Cancelar el resto de la ejecución
+                          }
+
                           addNewClientAndCar(_name, _email, _phone,);
                           // You can update the database or perform other actions
                           print("Cliente actualizado: $_name, $_email, $_phone");
