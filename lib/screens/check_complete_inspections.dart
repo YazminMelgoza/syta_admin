@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'inspection_screen.dart';
+import 'inspection_screenView.dart';
 
 class CheckCompletedInspections extends StatelessWidget {
   final String carName;
@@ -94,7 +95,7 @@ class CheckCompletedInspections extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>  InspectionScreen(
+                                    builder: (context) =>  InspectionScreenView(
                                       inspectionId: documentId,
                                       carName: carName,
                                     ),
