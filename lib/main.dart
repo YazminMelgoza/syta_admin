@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
             primary: const Color.fromARGB(255, 9, 8, 99),
             secondary: const Color.fromARGB(255, 255, 115, 29),
             surface: const Color.fromARGB(255, 255, 255, 255),
-            background: const Color.fromARGB(255, 255, 247, 233),
+            background: const Color.fromARGB(255, 255, 255, 255),
             error: const Color.fromARGB(255, 255, 0, 0),
             onPrimary: const Color.fromARGB(255, 255, 255, 255),
             onSecondary: const Color.fromARGB(255, 0, 0, 0),

@@ -20,7 +20,6 @@ class _CheckInspectionsState extends State<CheckInspections> {
   String carName = "";
   String userName = "";
 
-
   Future<String> getCarName(carId) async {
     try {
       final docRef = _firebaseFirestore.collection("cars").doc(carId);
@@ -29,12 +28,10 @@ class _CheckInspectionsState extends State<CheckInspections> {
         final carData = doc.data() as Map<String, dynamic>;
         carName = carData['name']!;
       } else {
-        print("El documento no existe");
         carName = "No carro";
       }
       return carName;
     } catch (e) {
-      print("Error obteniendo el documento: $e");
       carName = "Error";
       return carName;
     }
@@ -47,16 +44,13 @@ class _CheckInspectionsState extends State<CheckInspections> {
       if (doc.exists) {
         final carData = doc.data() as Map<String, dynamic>;
         userName = carData['name'];
-
       } else {
-        print("El documento no existe");
         userName = "No name";
       }
       return userName;
     } catch (e) {
-      print("Error obteniendo el documento: $e");
       userName = "Error";
-      return userName!;
+      return userName;
     }
   }
 
@@ -64,64 +58,68 @@ class _CheckInspectionsState extends State<CheckInspections> {
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
 
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text("Lista de Revisiones", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+        title: const Text(
+          "Lista de Revisiones",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
         actions: [
           IconButton(
             onPressed: () {
               ap.userSignOut().then(
                     (value) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                ),
-              );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    ),
+                  );
             },
             icon: const Icon(Icons.exit_to_app, color: Colors.white),
           ),
         ],
       ),
       body: Column(
-
         children: [
           const SizedBox(height: 20),
-          Row(  
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: const Text(
-                'Revisiones en Progreso',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: const Text(
+                  'Revisiones en Progreso',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                
               ),
-            ),
-            IconButton(  
-              onPressed: () {
-                if (!context.mounted) return;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddInspection(),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.add_circle),
-              color: Colors.blue, 
-            ),
-            SizedBox(height: 10,),
-          ],
-        ),
+              IconButton(
+                onPressed: () {
+                  if (!context.mounted) return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddInspection(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.add_circle),
+                color: Colors.blue,
+              ),
+              const SizedBox(height: 10),
+              
+            ],
+          ),
           StreamBuilder<QuerySnapshot>(
-            stream: _firebaseFirestore.collection('inspections')
-              .where("locationId", isEqualTo: ap.administratorModel.locationId)
-              .where("status", isEqualTo: "EN PROGRESO")
-              .snapshots(),
+            stream: _firebaseFirestore
+                .collection('inspections')
+                .where("locationId", isEqualTo: ap.administratorModel.locationId)
+                .where("status", isEqualTo: "EN PROGRESO")
+                .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -138,39 +136,17 @@ class _CheckInspectionsState extends State<CheckInspections> {
               return Expanded(
                 child: ListView.builder(
                   itemCount: inspections.length,
-                  itemBuilder: (context, index)
-                  {
+                  itemBuilder: (context, index) {
                     Map<String, dynamic> inspectionData = inspections[index].data() as Map<String, dynamic>;
-                    //Datos de la inspección
-                    String inspectionId    = inspections[index].id;
-                    String carId           = inspectionData['carId'];
-                    String description     = inspectionData['description'];
-                    String endDate         = inspectionData['endDate'];
-                    String estimatedDate   = inspectionData['estimatedDate'];
-                    String locationId      = inspectionData['locationId'];
-                    String startDate       = inspectionData['startDate'];
-                    String status          = inspectionData['status'];
-                    String title           = inspectionData['title'];
-                    String userId          = inspectionData['userId'];
+                    String inspectionId = inspections[index].id;
+                    String carId = inspectionData['carId'];
+                    String userId = inspectionData['userId'];
+                    String estimatedDate = inspectionData['estimatedDate'];
+                    String title = inspectionData['title'];
 
-                    int milliseconsDate = int.parse(estimatedDate);
-                    DateTime startNormalDate = DateTime.fromMillisecondsSinceEpoch(milliseconsDate);
-                    String date = "${startNormalDate.year}-${startNormalDate.month.toString().padLeft(2, '0')}-${startNormalDate.day.toString().padLeft(2, '0')}";
-
-                    String userName = userId;
-                    String carName =  carId;
-
-                    // Obtener el nombre del carro (carName) utilizando el carId
-                    Future<String> getCarName(String carId) async {
-                      DocumentSnapshot carSnapshot = await _firebaseFirestore.collection('cars').doc(carId).get();
-                      return carSnapshot.get('name');
-                    }
-
-                    // Obtener el nombre del usuario (userName) utilizando el userId
-                    Future<String> getUserName(String userId) async {
-                      DocumentSnapshot userSnapshot = await _firebaseFirestore.collection('users').doc(userId).get();
-                      return userSnapshot.get('name');
-                    }
+                    int millisecondsDate = int.parse(estimatedDate);
+                    DateTime normalDate = DateTime.fromMillisecondsSinceEpoch(millisecondsDate);
+                    String date = "${normalDate.year}-${normalDate.month.toString().padLeft(2, '0')}-${normalDate.day.toString().padLeft(2, '0')}";
 
                     return FutureBuilder(
                       future: Future.wait([
@@ -179,19 +155,18 @@ class _CheckInspectionsState extends State<CheckInspections> {
                       ]),
                       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtienen los datos.
+                          return const Center(child: CircularProgressIndicator());
                         }
                         if (snapshot.hasError) {
                           return Text('Error al obtener los datos: ${snapshot.error}');
                         }
                         if (!snapshot.hasData) {
-                          return Text('No hay datos disponibles');
+                          return const Text('No hay datos disponibles');
                         }
 
-                        String carName = snapshot.data![0]; // Obtiene el nombre del carro
-                        String userName = snapshot.data![1]; // Obtiene el nombre del usuario
+                        String carName = snapshot.data![0];
+                        String userName = snapshot.data![1];
 
-                        // Ahora puedes usar carName y userName en tu UI
                         return Center(
                           child: GestureDetector(
                             onTap: () {
@@ -205,39 +180,78 @@ class _CheckInspectionsState extends State<CheckInspections> {
                                 ),
                               );
                             },
-
-                          child: Container(
-                            margin: const EdgeInsets.all(10),
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.blue[50],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.car_repair_rounded,
-                                  size: 32,
-                                  color: Colors.blue,
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                    child: Container(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(inspectionData['title'], style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,), overflow: TextOverflow.ellipsis, maxLines: 1,),
-                                          Text(carName, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,), overflow: TextOverflow.ellipsis, maxLines: 1,),
-                                          Text(userName, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,), overflow: TextOverflow.ellipsis, maxLines: 1,),
-                                          Text("Fecha estimada: ${date}", style: TextStyle(fontSize: 12),textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 1,),
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(3),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    spreadRadius: 0,
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              title,
+                                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              userName,
+                                              style: const TextStyle(fontSize: 14),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "Auto: $carName",
+                                              style: const TextStyle(fontSize: 14),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "Fecha Estimada: $date",
+                                              style: const TextStyle(fontSize: 13),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Column(
+                                        children: const [
+                                          Icon(
+                                            Icons.directions_car,
+                                            size: 24,
+                                            color: Colors.black54,
+                                          ),
+                                          SizedBox(height: 5),
+                                          Text(
+                                            "En Curso",
+                                            style: TextStyle(fontSize: 12, color: Colors.black54),
+                                          ),
                                         ],
                                       ),
-                                    ),
+                                    ],
                                   ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
                         );
                       },
                     );
@@ -246,7 +260,7 @@ class _CheckInspectionsState extends State<CheckInspections> {
               );
             },
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(height: 10),
         ],
       ),
     );
