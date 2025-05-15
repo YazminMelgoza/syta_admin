@@ -8,6 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:syta_admin/screens/main_screen.dart';
+import 'package:syta_admin/widgets/header.dart';
+
+import '../widgets/custom_action_btn.dart';
 
 class InspectionScreen extends StatefulWidget {
   final String inspectionId;
@@ -22,6 +25,8 @@ class InspectionScreen extends StatefulWidget {
 class _InspectionScreenState extends State<InspectionScreen> {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   bool isChecked = false;
+  bool isLoading = true;
+  late DocumentSnapshot inspectionData;
   void actualizarEstatus( String id, String status, String dateF)
   {
     _firebaseFirestore.collection("inspectionDetails").doc(id).update({"status": status, "endDate": dateF});
@@ -64,195 +69,268 @@ class _InspectionScreenState extends State<InspectionScreen> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    fetchInspectionData();
+  }
+
+  Future<void> fetchInspectionData() async {
+    try {
+      DocumentSnapshot documentSnapshot = await _firebaseFirestore
+          .collection('inspections')
+          .doc(widget.inspectionId)
+          .get();
+      if (documentSnapshot.exists) {
+        setState(() {
+          inspectionData = documentSnapshot;
+
+          isLoading = false;
+
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        showError('Documento no encontrado');
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      showError('Error al cargar los datos');
+    }
+  }
+
+  void showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
 
-    return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text("Revisión", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MainScreen(),
-                  ), (route) => false);
-            },
-            icon: const Icon(Icons.home, color: Colors.white),
-          ),
-        ],
-      ),
+    return isLoading ? const Center(child: CircularProgressIndicator()) : Scaffold(
+      appBar: CustomAppBar(titulo: "Detalles"),
       body: Column(
         children: [
-          SizedBox(width: 10),
           Container(
-        margin:EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(widget.carName,textAlign: TextAlign.left,
-              style: TextStyle(
-                fontSize: 20, // Tamaño del título
-                fontWeight: FontWeight.bold, // Negrita para un aspecto de título
-
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (!context.mounted) return;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  InspectionAddDetailScreen(
-                        inspectionId: widget.inspectionId
-                    ),
-                  ),
-                );
-
-
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFFC4C00),
-              ),
-              child: Text(
-                "+ Actualización",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-
-          ],
-        ),
-      ),
-
-      SizedBox(width: 10),
-      StreamBuilder<QuerySnapshot>(
-        stream: _firebaseFirestore.collection('inspectionDetails').where("inspectionId", isEqualTo: widget.inspectionId).snapshots(),
-        builder: (context, snapshot)
-        {
-          if (snapshot.connectionState == ConnectionState.waiting)
-          {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError)
-          {
-            return Text('Error al obtener los datos: ${snapshot.error}');
-          }
-          if (!snapshot.hasData)
-          {
-            return Text('No hay documentos disponibles');
-          }
-          List<QueryDocumentSnapshot> users = snapshot.data!.docs;
-          return Expanded(
-            child: ListView.builder(
-              itemCount: users.length,
-              itemBuilder: (context, index) {
-                Map<String, dynamic> userData = users[index].data() as Map<String, dynamic>;
-                String documentId = users[index].id;
-                String userStatus = userData['status'];
-                String endDate = "";
-                int milliseconsDate = int.parse(userData['startDate']);
-                DateTime startNormalDate = DateTime.fromMillisecondsSinceEpoch(milliseconsDate);
-                String startDate = startNormalDate.toString();
-                //Date in millisecons
-                if(userData['status']=="FINALIZADO"){
-                  int fechaEnMilisegundos = int.parse(userData['endDate']); // Por ejemplo, 1617948600000 representa el 09 de abril de 2021
-                  DateTime fechaNormal = DateTime.fromMillisecondsSinceEpoch(fechaEnMilisegundos);
-                  endDate = fechaNormal.toString();
-                }
-
-
-                return Center(
-                  child: Container(
-                    //width: 200,
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: (userStatus=="FINALIZADO") ? Colors.blue[50] : Colors.orangeAccent, // Color de fondo del Container
-                      borderRadius: BorderRadius.circular(10), // Radio de borde del Container
-                    ),
-                    child: Row(
-                      //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isChecked = !isChecked;
-                            });
-                            String dateF = "";
-                            String status = "";
-                            if (userData['status']=="EN PROGRESO")
-                            {
-                              status = "FINALIZADO";
-                              DateTime now = DateTime.now();
-                              dateF = now.millisecondsSinceEpoch.toString();
-                            }else
-                            {
-                              status = "EN PROGRESO";
-                            }
-                            actualizarEstatus(documentId,status, dateF);
-
-                          },
-                          icon: (userStatus=="FINALIZADO") ? Icon(Icons.check_circle) : Icon(Icons.check_circle_outline),
-                          iconSize: 32,
+            margin: const EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        '${inspectionData['title']}',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        SizedBox(width: 10),
-                        GestureDetector(
-                            onTap: () {
-                              if (!context.mounted) return;
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InspectionDetailScreen(
-                                      inspectionDetailId: documentId,
-                                      description: userData['description'],
-                                      endDate: endDate,
-                                      startDate: startDate,
-                                      status: userData['status']
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  Text(userData['description'],
-                                    style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),),
-                                  Text(endDate, style: TextStyle(fontSize: 12),textAlign: TextAlign.left,),
-                                ],
-                              ),
-                            )
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
-      ),
+                      ),
+                      Text(
+                        inspectionData['status'],
+                      )
 
-      SizedBox(height: 20),
-      ElevatedButton(
-        onPressed: () {
-          if (!context.mounted) return;
-          finalizarInspeccion(context,widget.inspectionId, "FINALIZADO");
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color.fromARGB(255, 9, 8, 99),
-        ),
-        child: Text(
-          "Finalizar Revisión",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+                    ],
+                  ),
+                ),
+                Image.asset(
+                  'assets/img/herramientas.png',
+                  height: 40,
+                  fit: BoxFit.contain,
+                ),
               ],
             ),
+          ),
+          SizedBox(height: 10,),
+          Container(
+            height: 1,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: Color(0xFFFF6A00),
+              borderRadius: BorderRadius.all(Radius.circular(0)),
+            ),
+          ),
+          SizedBox(height: 10,),
+          CustomActionButton(
+            text: "Agregar Actualización",
+            icon: Icons.add,
+            backgroundColor: const Color(0xFFFF6A00),
+            onTap: () {
+              if (!context.mounted) return;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => InspectionAddDetailScreen(
+                    inspectionId: widget.inspectionId,
+                  ),
+                ),
+              );
+            },
+          ),
+          SizedBox(height: 10,),
+          StreamBuilder<QuerySnapshot>(
+            stream: _firebaseFirestore.collection('inspectionDetails').where("inspectionId", isEqualTo: widget.inspectionId).snapshots(),
+            builder: (context, snapshot)
+            {
+              if (snapshot.connectionState == ConnectionState.waiting)
+              {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError)
+              {
+                return Text('Error al obtener los datos: ${snapshot.error}');
+              }
+              if (!snapshot.hasData)
+              {
+                return Text('No hay documentos disponibles');
+              }
+              List<QueryDocumentSnapshot> users = snapshot.data!.docs;
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    Map<String, dynamic> userData = users[index].data() as Map<String, dynamic>;
+                    String documentId = users[index].id;
+                    String userStatus = userData['status'];
+                    String endDate = "";
+                    int milliseconsDate = int.parse(userData['startDate']);
+                    DateTime startNormalDate = DateTime.fromMillisecondsSinceEpoch(milliseconsDate);
+                    String startDate = startNormalDate.toString();
+                    //Date in millisecons
+                    if(userData['status']=="FINALIZADO"){
+                      int fechaEnMilisegundos = int.parse(userData['endDate']); // Por ejemplo, 1617948600000 representa el 09 de abril de 2021
+                      DateTime fechaNormal = DateTime.fromMillisecondsSinceEpoch(fechaEnMilisegundos);
+                      endDate = fechaNormal.toString();
+                    }
+
+
+                    return Center(
+                      child: Container(
+                        //width: 200,
+                        margin: const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF5F5F5),
+                          borderRadius: BorderRadius.circular(0),
+                          border: Border(
+                            bottom: BorderSide(
+                              color: const Color(0xFF333333).withOpacity(0.25),
+                              width: 0,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                  onTap: () {
+                                    if (!context.mounted) return;
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => InspectionDetailScreen(
+                                            inspectionDetailId: documentId,
+                                            description: userData['description'],
+                                            endDate: endDate,
+                                            startDate: startDate,
+                                            status: userData['status']
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(userData['description'],
+                                          style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                        ),
+                                        Text(endDate,
+                                          style: TextStyle(fontSize: 12),textAlign: TextAlign.left,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isChecked = !isChecked;
+                                });
+                                String dateF = "";
+                                String status = "";
+                                if (userData['status']=="EN PROGRESO")
+                                {
+                                  status = "FINALIZADO";
+                                  DateTime now = DateTime.now();
+                                  dateF = now.millisecondsSinceEpoch.toString();
+                                }else
+                                {
+                                  status = "EN PROGRESO";
+                                }
+                                actualizarEstatus(documentId,status, dateF);
+                              },
+                              icon: (userStatus=="FINALIZADO") ? Icon(
+                                Icons.check_circle,
+                                color: Color(0xFFFF731D), // Color hexadecimal #FF731D
+                              ) : Icon(Icons.check_circle_outline),
+                              iconSize: 40,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+
+          SizedBox(height: 20),
+          GestureDetector(
+            onTap: () {
+              if (!context.mounted) return;
+              finalizarInspeccion(context,widget.inspectionId, "FINALIZADO");
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 9, 8, 99),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.done_all, color: Colors.white),
+                  SizedBox(width: 8), // Espacio entre ícono y texto
+                  Text(
+                    "Finalizar Revisión",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
     );
   }
 }

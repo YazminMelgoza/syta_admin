@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:syta_admin/widgets/header.dart';
+
+import '../widgets/custom_action_btn.dart';
 
 class CarForm extends StatefulWidget {
   final String clientId; // Add clientId parameter
@@ -35,18 +38,11 @@ class _CarFormState extends State<CarForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: const Text(
-          "Agregar Auto",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
+      appBar: CustomAppBar(titulo: "Agregar Auto"),
       body: SingleChildScrollView(
         child: Center(
           child: Container(
-            margin: const EdgeInsets.only(top: 20.0),
+            margin: const EdgeInsets.only(top: 10.0),
             width: double.infinity,
             color: Colors.white,
             child: Padding(
@@ -56,7 +52,6 @@ class _CarFormState extends State<CarForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20.0),
                     Text(
                       'Vehículos Personales:',
                       style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
@@ -87,8 +82,13 @@ class _CarFormState extends State<CarForm> {
                       onSaved: (newValue) => _carYear = newValue ?? "",
                     ),
                     SizedBox(height: 20.0),
-                    Padding(padding: EdgeInsets.only(left:180),child: ElevatedButton(
-                      onPressed: () {
+
+                    CustomActionButton(
+                      text: "Agregar",
+                      icon: Icons.add,
+                      backgroundColor: Color(0xFFFF6A00),
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      onTap: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save(); // Save form data
 
@@ -121,8 +121,7 @@ class _CarFormState extends State<CarForm> {
                         }
                         Navigator.pop(context);
                       },
-                      child: const Text("Guardar Auto"),
-                    )),
+                    ),
                   ],
                 ),
               ),

@@ -4,6 +4,9 @@ import 'package:syta_admin/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:syta_admin/screens/check_inspections.dart';
+import 'package:syta_admin/widgets/header.dart';
+
+import '../widgets/custom_action_btn.dart';
 
 class InspectionDetailScreen extends StatefulWidget {
   final String inspectionDetailId;
@@ -66,137 +69,122 @@ class _InspectionDetailScreenState extends State<InspectionDetailScreen> {
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text("SYTA  ${ap.locationModel.name}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-        actions: [
-          IconButton(
-            onPressed: () {
-              ap.userSignOut().then(
-                    (value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CheckInspections(),
-                      ),
-                    ),
-                  );
-            },
-            icon: const Icon(Icons.exit_to_app, color: Colors.white),
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(titulo: "Actualización"),
       body: Center(
-          child: Container(
-            margin:EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(width: 10),
-                Container(
-                  //margin:EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Detallle de Actualización",textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(onPressed: ()
-                      {
-                        // Muestra el mensaje modal cuando se presiona el botón
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context)
+          child: Column(
+            children: [
+              Container(
+                margin:EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 10),
+                    Container(
+                      //margin:EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Descripción",textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          IconButton(onPressed: ()
                           {
-                            return AlertDialog(
-                              title: Text('Eliminando Registro'),
-                              content: Text('¿Está seguro que desea eliminar este registro?'),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: ()
-                                  {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Cancelar'),
-                                ),
-                                TextButton(
-                                  onPressed: ()
-                                  {
-                                    Navigator.of(context).pop();
-                                    deleteDoc(widget.inspectionDetailId);
-                                  },
-                                  child: Text('Aceptar'),
-                                ),
-                              ],
+                            // Muestra el mensaje modal cuando se presiona el botón
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context)
+                              {
+                                return AlertDialog(
+                                  title: Text('Eliminando Registro'),
+                                  content: Text('¿Está seguro que desea eliminar este registro?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: ()
+                                      {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Cancelar'),
+                                    ),
+                                    TextButton(
+                                      onPressed: ()
+                                      {
+                                        Navigator.of(context).pop();
+                                        deleteDoc(widget.inspectionDetailId);
+                                      },
+                                      child: Text('Aceptar'),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                        icon: Icon(Icons.delete),
-                        iconSize: 32,
+                            icon: Icon(Icons.delete),
+                            iconSize: 32,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                /*
-                Text("Detalle de Inspección:  " + widget.inspectionDetailId),
-                Text("Descripcion: "+ widget.description),
-                Text("Inicio: "+ widget.startDate),
-                Text("Final: "+ widget.endDate),
-                Text("Status: "+ widget.status),*/
-                TextField(
-                  controller: _controller,
-                  maxLines: null, // Esto permite que el campo de texto sea multilinea
-                  keyboardType: TextInputType.multiline, // Esto también permite que el campo de texto sea multilinea
-                  decoration: InputDecoration(
-                    labelText: 'Descripción', // Etiqueta del campo de texto
-                    border: OutlineInputBorder(), // Bordes del campo de texto
-                  ),
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  children: [
-                    Text("Finalizado: "),
-                    Checkbox(
-                      value: _isChecked,
-                      onChanged: (bool? newValue) {
-                        setState(() {
-                          _isChecked = newValue!;
-                        });
-                        },
                     ),
+                    /*
+                    Text("Detalle de Inspección:  " + widget.inspectionDetailId),
+                    Text("Descripcion: "+ widget.description),
+                    Text("Inicio: "+ widget.startDate),
+                    Text("Final: "+ widget.endDate),
+                    Text("Status: "+ widget.status),*/
+                    TextField(
+                      controller: _controller,
+                      maxLines: 2, // Esto permite que el campo de texto sea multilinea
+                      keyboardType: TextInputType.multiline, // Esto también permite que el campo de texto sea multilinea
+                      decoration: InputDecoration(
+                        labelText: 'Descripción', // Etiqueta del campo de texto
+                        border: OutlineInputBorder(), // Bordes del campo de texto
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Row(
+                      children: [
+                        Text("Finalizado: "),
+                        Checkbox(
+                          value: _isChecked,
+                          onChanged: (bool? newValue) {
+                            setState(() {
+                              _isChecked = newValue!;
+                            });
+                            },
+                        ),
+                      ],
+                    ),
+
+
                   ],
                 ),
-
-                ElevatedButton(
-                  onPressed: (){
-                    String status = "";
-                    String date = "";
-                    if(_isChecked==true)
-                    {
-                      status="FINALIZADO";
-                      DateTime now = DateTime.now();
-                      date = now.millisecondsSinceEpoch.toString();
-                    }else
-                    {
-                      status="EN PROGRESO";
-                    }
-                    updateDetail(widget.inspectionDetailId,_controller.text,status,date);
-                    if (!context.mounted) return;
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFC4C00),
-                  ),
-                    child: Text("Guardar Cambios",style: TextStyle(color: Colors.white), ),
-                )
-              ],
-            ),
-          )
+              ),
+              CustomActionButton(
+                text: "Guardar Cambios",
+                icon: Icons.save,
+                backgroundColor: const Color(0xFFFF6A00),
+                onTap: () {
+                  String status = "";
+                  String date = "";
+                  if(_isChecked==true)
+                  {
+                    status="FINALIZADO";
+                    DateTime now = DateTime.now();
+                    date = now.millisecondsSinceEpoch.toString();
+                  }else
+                  {
+                    status="EN PROGRESO";
+                  }
+                  updateDetail(widget.inspectionDetailId,_controller.text,status,date);
+                  if (!context.mounted) return;
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
       ),
     );
   }

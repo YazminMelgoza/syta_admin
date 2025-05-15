@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
 import 'package:syta_admin/screens/check_inspections.dart';
+import 'package:syta_admin/widgets/custom_action_btn.dart';
+import 'package:syta_admin/widgets/header.dart';
 
 class ClientForm extends StatefulWidget {
   final bool fromAddInspectionCar;
@@ -51,18 +53,11 @@ class _ClientFormState extends State<ClientForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: const Text(
-          "Agregar Cliente",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
+      appBar: CustomAppBar(titulo: "Agregar Cliente"),
       body: SingleChildScrollView(
         child: Center(
           child: Container(
-            margin: const EdgeInsets.only(top: 20.0),
+            margin: const EdgeInsets.only(top:10.0),
             width: double.infinity,
             color: Colors.white,
             child: Padding(
@@ -175,47 +170,51 @@ class _ClientFormState extends State<ClientForm> {
                     ),
 
                     SizedBox(height: 20.0),
-                    Padding(padding: EdgeInsets.only(left:180),child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save(); // Save form data
+                    CustomActionButton(
+                        text: "Agregar",
+                        icon: Icons.add,
+                        backgroundColor: Color(0xFFFF6A00),
+                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save(); // Save form data
 
-                          String phoneNumber = phoneController.text.trim();
-                          _phone = "+${selectedCountry.phoneCode}$phoneNumber";
-                          if (_name.trim().isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('El nombre no puede estar vacío'),
-                              ),
-                            );
-                            return; // Cancelar el resto de la ejecución
+                            String phoneNumber = phoneController.text.trim();
+                            _phone = "+${selectedCountry.phoneCode}$phoneNumber";
+                            if (_name.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('El nombre no puede estar vacío'),
+                                ),
+                              );
+                              return; // Cancelar el resto de la ejecución
+                            }
+
+                            if (_email.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('El email no puede estar vacío'),
+                                ),
+                              );
+                              return; // Cancelar el resto de la ejecución
+                            }
+
+                            if (phoneNumber.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('El teléfono no puede estar vacío'),
+                                ),
+                              );
+                              return; // Cancelar el resto de la ejecución
+                            }
+
+                            addNewClientAndCar(_name, _email, _phone,);
+                            // You can update the database or perform other actions
+                            print("Cliente actualizado: $_name, $_email, $_phone");
+                            // You can show a success message or navigate elsewhere
+                            Navigator.pop(context);
                           }
-
-                          if (_email.trim().isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('El email no puede estar vacío'),
-                              ),
-                            );
-                            return; // Cancelar el resto de la ejecución
-                          }
-
-                          if (phoneNumber.trim().isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('El teléfono no puede estar vacío'),
-                              ),
-                            );
-                            return; // Cancelar el resto de la ejecución
-                          }
-
-                          addNewClientAndCar(_name, _email, _phone,);
-                          // You can update the database or perform other actions
-                          print("Cliente actualizado: $_name, $_email, $_phone");
-                          // You can show a success message or navigate elsewhere
-                          Navigator.pop(context);
-                        }
-                        /*if (widget.fromAddInspectionCar) {
+                          /*if (widget.fromAddInspectionCar) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -225,9 +224,9 @@ class _ClientFormState extends State<ClientForm> {
                         } else {
                           Navigator.pop(context);
                         }*/
-                      },
-                      child: const Text("Guardar Cliente"),
-                    )),
+                        },
+                    ),
+
                   ],
                 ),
               ),

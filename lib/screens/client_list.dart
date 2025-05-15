@@ -6,6 +6,8 @@ import 'package:syta_admin/screens/config/menu/menu_items.dart';
 import 'package:syta_admin/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:syta_admin/screens/login_screen.dart';
+import 'package:syta_admin/widgets/custom_action_btn.dart';
+import 'package:syta_admin/widgets/header.dart';
 
 class ClientList extends StatelessWidget {
   const ClientList({Key? key}); // Fix the key parameter
@@ -13,29 +15,7 @@ class ClientList extends StatelessWidget {
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: const Text(
-          "Clientes",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        actions: [
-          IconButton(
-            onPressed: () {
-              ap.userSignOut().then(
-                    (value) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                ),
-              );
-            },
-            icon: const Icon(Icons.exit_to_app, color: Colors.white),
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(titulo: "Clientes"),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),
         builder: (context, snapshot) {
@@ -46,10 +26,30 @@ class ClientList extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           final List<MenuItem> clientList = snapshot.data!.docs.map((doc) => _menuItemFromDoc(doc)).toList();
+          return
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 10,),
+                    CustomActionButton(
+                        text: "Agregar Cliente",
+                        icon: Icons.add,
+                        backgroundColor:  const Color(0xFFFF6A00),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ClientForm()),
+                          );
+                        },
+                    ),
+                    SizedBox(height: 10,),
+                    _ListView(clientList: clientList),
 
-          return _ListView(clientList: clientList); 
+                  ],
+                ),
+              );
+            //_ListView(clientList: clientList);
         },
       ),
     );
@@ -85,15 +85,12 @@ class _ListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: clientList.length + 1, // Add 1 for "Add Client" container
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: clientList.length ,
       itemBuilder: (context, index) {
-        if (index == clientList.length) {
-          // This is the last item, for adding client (unchanged)
-          return _AddClientContainer();
-        } else {
-          final menuItem = clientList[index];
-          return _CustomListTile(menuItem: menuItem);
-        }
+        final menuItem = clientList[index];
+        return UserItem(menuItem: menuItem);
       },
     );
   }
@@ -162,6 +159,89 @@ class _AddClientContainer extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const ClientForm()),
           );
         },
+      ),
+    );
+  }
+}
+
+class UserItem extends StatelessWidget {
+  final MenuItem menuItem;
+
+  const UserItem({
+    required this.menuItem,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ClientInfo(
+              clientId: menuItem.clientId, // Pass client ID
+              name: menuItem.title,
+              email: menuItem.subTitle,
+              phone: menuItem.phone, // Add phone number here if available
+            ),
+          ),
+        );
+
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 5, left: 10, right: 10),
+        padding: const EdgeInsets.only(top: 5, bottom: 5),
+        decoration: BoxDecoration(
+          color: Color(0xFFFFFCF6),
+          borderRadius: BorderRadius.circular(10),
+          border: Border(
+            bottom: BorderSide(
+              color: const Color(0xFF333333).withOpacity(0.25),
+              width: 2,
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          menuItem.title,
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text( menuItem.subTitle, style: const TextStyle(fontSize: 18.0)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 10,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/img/usuarioCuadrado.png',
+                    height: 40,
+                    fit: BoxFit.contain,
+                  ),
+
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

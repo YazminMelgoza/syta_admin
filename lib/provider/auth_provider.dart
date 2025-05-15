@@ -60,11 +60,12 @@ class AuthProvider extends ChangeNotifier {
       await saveUserDataToSP();
       await setSignIn();
       if (!context.mounted) return;
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           builder: (context) => const MainScreen(),
         ),
+              (route) => false
       );
     } on FirebaseAuthException catch (e) {
       // guard the use with a mounted check

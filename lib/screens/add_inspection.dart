@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:syta_admin/screens/add_inspection_choose_car.dart';
 import 'package:syta_admin/screens/main_screen.dart';
+import 'package:syta_admin/widgets/custom_action_btn.dart';
+import 'package:syta_admin/widgets/header.dart';
 
 class AddInspection extends StatefulWidget {
   const AddInspection({Key? key}) : super(key: key);
@@ -32,28 +34,7 @@ class _AddInspectionState extends State<AddInspection> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(
-          "Agregar Revisión",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MainScreen(),
-                ),
-                    (route) => false,
-              );
-            },
-            icon: const Icon(Icons.home, color: Colors.white),
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(titulo: "Agregar Revisión"),
       body: Container(
         margin: EdgeInsets.all(30.0),
         child: Column(
@@ -145,30 +126,31 @@ class _AddInspectionState extends State<AddInspection> {
               ),
             ),
             SizedBox(height: 10,),
-            Align(
-                alignment: Alignment.center,
-                child: ElevatedButton(
-                    onPressed: () {
-                      String phoneNumber = phoneController.text.trim();
-                      print(phoneNumber.length);
-                      if (phoneNumber.length <= 9 || phoneNumber.length >= 11) {
-                        setState(() {
-                          showError = true;
-                        });
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddInspectionCar(
-                              numero: "+${selectedCountry.phoneCode}$phoneNumber",
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                    child: Text("Buscar")
-                )
+            CustomActionButton(
+              text: "Buscar",
+              icon: Icons.search ,
+              backgroundColor: Color(0xFFFF6A00),
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              onTap: () {
+                String phoneNumber = phoneController.text.trim();
+                print(phoneNumber.length);
+                if (phoneNumber.length <= 9 || phoneNumber.length >= 11) {
+                  setState(() {
+                    showError = true;
+                  });
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddInspectionCar(
+                        numero: "+${selectedCountry.phoneCode}$phoneNumber",
+                      ),
+                    ),
+                  );
+                }
+              },
             ),
+
           ],
         ),
       ),

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:syta_admin/provider/auth_provider.dart'; // Assuming this is where getDocReferenceForCurrentUser resides
 import 'package:syta_admin/screens/login_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:syta_admin/widgets/custom_action_btn.dart';
+import 'package:syta_admin/widgets/header.dart';
 
 final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 
@@ -64,31 +66,7 @@ class _UpdateAvail extends State<UpdateAvail> {
     final docRef = FirebaseFirestore.instance.collection('locations').doc(
         '7yGA1qlf3PoEYOzHQxUf');
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .primary,
-        title: Text("SYTA  ${ap.locationModel.name}",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-        actions: [
-          IconButton(
-            onPressed: () {
-              ap.userSignOut().then(
-                    (value) =>
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    ),
-              );
-            },
-            icon: const Icon(Icons.exit_to_app, color: Colors.white),
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(titulo: "SYTA  ${ap.locationModel.name}"),
       body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -101,6 +79,7 @@ class _UpdateAvail extends State<UpdateAvail> {
                     Text("Disponibilidad",
                       textAlign: TextAlign.start,
                       style: TextStyle(
+                        color: Color(0xFF1A1A77),
                         fontWeight: FontWeight.bold,
                         fontSize: 26,
                       ),),
@@ -184,17 +163,40 @@ class _UpdateAvail extends State<UpdateAvail> {
                   ],)
                 ],
               ),
-              SizedBox(height: 80),
-              Row(children: [
-                Padding(padding: EdgeInsets.only(left: 20), child:
-                Text("Estado Actual de la sucursal:",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500))
+              SizedBox(height: 30),
+              Row(
+                children: [
+                  Padding(padding: EdgeInsets.only(left: 20), child:
+                    Text("Estado Actual de la sucursal:",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500))
+                    ),
+                  SizedBox(width: 15),
+                  _buildStatusIndicator(_status)
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
+                child: Text(
+                  "Presiona sobre alguno de los círculos para cambiar el estado de la disponibilidad del taller",
+                  textAlign: TextAlign.start,
                 ),
-                SizedBox(width: 15),
-                _buildStatusIndicator(_status)
-              ],
-
+              ),
+              SizedBox(height: 80),
+              CustomActionButton(
+                  text: "Cerrar Sesión",
+                  icon: Icons.logout,
+                  backgroundColor: Color(0xFFD33D30),
+                  onTap: () {
+                    ap.userSignOut().then(
+                          (value) => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      ),
+                    );
+                  },
               )
             ],
           )),

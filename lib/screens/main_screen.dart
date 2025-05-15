@@ -36,24 +36,26 @@ class _MainScreenState extends State<MainScreen> {
           });
         },
         elevation: 0,
+        selectedItemColor: const Color(0xFF1A1A77),
+        unselectedItemColor: const Color(0xFF333333),
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.car_repair_outlined),
             activeIcon: const Icon(Icons.car_repair),
             label: 'Revisiones',
-            backgroundColor: colors.primary,
+            backgroundColor: const Color(0xFFF5F5F5),
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.person_outline),
             activeIcon: const Icon(Icons.person),
             label: 'Clientes',
-            backgroundColor: colors.primary,
+            backgroundColor: const Color(0xFFF5F5F5),
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings_outlined),
             activeIcon: const Icon(Icons.settings),
             label: 'Disponibilidad',
-            backgroundColor: colors.primary,
+            backgroundColor: const Color(0xFFF5F5F5),
           ),
         ],
       ),
